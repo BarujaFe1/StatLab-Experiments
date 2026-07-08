@@ -16,13 +16,19 @@
   </p>
 
   <p>
-    <img src="https://img.shields.io/badge/Status-MVP-orange.svg" alt="Status MVP" />
+    <img src="https://img.shields.io/badge/Status-Deployed-success.svg" alt="Status Deployed" />
     <img src="https://img.shields.io/badge/Interface-Web%20App-blue.svg" alt="Interface Web App" />
     <img src="https://img.shields.io/badge/Frontend-Next.js-black.svg?logo=next.js&logoColor=white" alt="Next.js" />
     <img src="https://img.shields.io/badge/Backend-FastAPI-009688.svg?logo=fastapi&logoColor=white" alt="FastAPI" />
     <img src="https://img.shields.io/badge/Language-TypeScript-3178C6.svg?logo=typescript&logoColor=white" alt="TypeScript" />
     <img src="https://img.shields.io/badge/Python-3.11+-3776AB.svg?logo=python&logoColor=white" alt="Python 3.11+" />
     <img src="https://img.shields.io/badge/Statistics-Frequentist-7C3AED.svg" alt="Frequentist Statistics" />
+    <img src="https://img.shields.io/badge/Deploy-Vercel-000000.svg?logo=vercel&logoColor=white" alt="Deployed on Vercel" />
+  </p>
+  <p>
+    <a href="https://frontend-gamma-blush-15.vercel.app" style="display:inline-block;padding:0.6em 1.4em;background:#0f172a;color:white;border-radius:0.5em;text-decoration:none;font-weight:600;margin-top:0.5em">
+      🧪 Abrir demo ao vivo
+    </a>
   </p>
 </div>
 
@@ -227,22 +233,32 @@ This prevents oversimplified binary decisions such as “won” or “lost”.
 ```txt
 statlab-experiments/
 ├── frontend/
+│   ├── api/
+│   │   └── index.py            # FastAPI + Mangum (serverless Python)
 │   ├── app/                    # Next.js App Router
-│   ├── components/             # UI components
-│   ├── lib/                    # Frontend utilities
+│   │   ├── page.tsx            # Página principal (PT-BR)
+│   │   ├── layout.tsx          # Root layout com metadados
+│   │   └── globals.css         # Tailwind v4
 │   ├── public/                 # Static assets
+│   ├── requirements.txt        # Python dependencies
+│   ├── vercel.json             # Vercel config (rewrites + public)
 │   └── package.json
 │
 ├── backend/
 │   ├── app/
-│   │   ├── main.py             # FastAPI entrypoint
+│   │   ├── main.py             # FastAPI entrypoint (original)
 │   │   ├── schemas.py          # Request/response models
 │   │   ├── statistics.py       # Statistical calculations
 │   │   └── interpretation.py   # Decision engine
 │   ├── requirements.txt
 │   └── tests/
 │
-├── start.bat                   # Local stack bootstrap for Windows
+├── docs/
+│   ├── api-contract.md
+│   └── capabilities.md
+│
+├── portfolio-project-handoff.md   # Documento de handoff completo
+├── start.bat                      # Local stack bootstrap (Windows)
 ├── README.md
 └── .gitignore
 ```
@@ -436,6 +452,21 @@ Before acting on an experiment result:
 - [ ] Power curve visualization
 - [ ] Minimum practical effect presets
 - [ ] Integration with analytics tools
+
+---
+
+## 🚀 Deploy ao vivo
+
+O StatLab Experiments está publicado no **Vercel** com backend Python serverless integrado:
+
+| | |
+|---|---|
+| **URL de produção** | [https://frontend-gamma-blush-15.vercel.app](https://frontend-gamma-blush-15.vercel.app) |
+| **Tipo** | Next.js + FastAPI Serverless (Tipo B) |
+| **Stack do deploy** | Python 3.12, SciPy, statsmodels, FastAPI, Mangum |
+| **Root directory** | `frontend/` |
+
+> 📄 Documento completo de handoff para portfólio: [`portfolio-project-handoff.md`](./portfolio-project-handoff.md)
 
 ---
 
