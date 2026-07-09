@@ -1,507 +1,370 @@
 <div align="center">
-  <img src="./icon.png" alt="StatLab Experiments Logo" width="120" height="120" />
+  <img src="./assets/icon.png" alt="StatLab Experiments Logo" width="120" height="120" />
 
   <h1>StatLab Experiments</h1>
 
-  <p><strong>Planejamento e interpretação de testes A/B com rigor estatístico e clareza visual</strong></p>
-  <p><strong>Plan and interpret A/B tests with statistical rigor and visual clarity</strong></p>
+  <p><strong>Planejamento e interpretação de testes A/B com Z-test, Bonferroni e decisão em 3 estados.</strong></p>
+  <p><strong>Plan and interpret A/B tests with Z-test, Bonferroni correction and a 3-state decision engine.</strong></p>
 
   <p>
-    <a href="#pt-br">PT-BR</a> •
-    <a href="#en">English</a> •
-    <a href="#tech-stack">Tech Stack</a> •
-    <a href="#quick-start--início-rápido">Quick Start</a> •
-    <a href="#estatística--statistics">Estatística</a> •
-    <a href="#autor--author">Autor</a>
+    <a href="#1-visão-geral--overview">PT-BR / English Overview</a> •
+    <a href="#-product-preview">Preview</a> •
+    <a href="#-stack--tecnologias">Stack</a> •
+    <a href="#-arquitetura--architecture">Architecture</a> •
+    <a href="#-quick-start--início-rápido">Quick Start</a> •
+    <a href="#-autor--author">Author</a>
   </p>
 
   <p>
-    <img src="https://img.shields.io/badge/Status-Deployed-success.svg" alt="Status Deployed" />
-    <img src="https://img.shields.io/badge/Interface-Web%20App-blue.svg" alt="Interface Web App" />
-    <img src="https://img.shields.io/badge/Frontend-Next.js-black.svg?logo=next.js&logoColor=white" alt="Next.js" />
-    <img src="https://img.shields.io/badge/Backend-FastAPI-009688.svg?logo=fastapi&logoColor=white" alt="FastAPI" />
-    <img src="https://img.shields.io/badge/Language-TypeScript-3178C6.svg?logo=typescript&logoColor=white" alt="TypeScript" />
-    <img src="https://img.shields.io/badge/Python-3.11+-3776AB.svg?logo=python&logoColor=white" alt="Python 3.11+" />
-    <img src="https://img.shields.io/badge/Statistics-Frequentist-7C3AED.svg" alt="Frequentist Statistics" />
-    <img src="https://img.shields.io/badge/Deploy-Vercel-000000.svg?logo=vercel&logoColor=white" alt="Deployed on Vercel" />
+    <img alt="Next.js" src="https://img.shields.io/badge/Next.js-16-000000?style=for-the-badge&logo=nextdotjs" />
+    <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-React-3178C6?style=for-the-badge&logo=typescript&logoColor=white" />
+    <img alt="Python" src="https://img.shields.io/badge/Python-3.12-3776AB?style=for-the-badge&logo=python&logoColor=white" />
+    <img alt="FastAPI" src="https://img.shields.io/badge/FastAPI-API-009688?style=for-the-badge&logo=fastapi&logoColor=white" />
+    <img alt="SciPy" src="https://img.shields.io/badge/SciPy-Z--test-8CAAE6?style=for-the-badge&logo=scipy&logoColor=white" />
+    <img alt="statsmodels" src="https://img.shields.io/badge/statsmodels-Power%20%26%20Inference-0EA5E9?style=for-the-badge" />
+    <img alt="Vercel" src="https://img.shields.io/badge/Vercel-Deployed-000000?style=for-the-badge&logo=vercel&logoColor=white" />
   </p>
+
   <p>
-    <a href="https://frontend-gamma-blush-15.vercel.app" style="display:inline-block;padding:0.6em 1.4em;background:#0f172a;color:white;border-radius:0.5em;text-decoration:none;font-weight:600;margin-top:0.5em">
-      🧪 Abrir demo ao vivo
+    <a href="https://frontend-gamma-blush-15.vercel.app">
+      <img alt="Live demo" src="https://img.shields.io/badge/Live%20Demo-Abrir%20StatLab-16a34a?style=for-the-badge" />
     </a>
   </p>
 </div>
 
 ---
 
-<a id="pt-br"></a>
+## 1. Visão Geral / Overview
 
-## 🇧🇷 PT-BR
+O **StatLab Experiments** é uma ferramenta web full-stack para **planejar e interpretar testes A/B** com rigor estatístico. Ele calcula tamanho amostral, executa Z-test para proporções com **correção de Bonferroni** e classifica o resultado em três estados: **Winner**, **Inconclusive** ou **Weak Effect**.
 
-## 📊 Visão geral
+Diferente de um dashboard que só mostra “ganhou/perdeu”, o StatLab deixa explícitos o **alpha ajustado**, o **intervalo de confiança**, o **uplift** e a **interpretação textual** em português — útil para aprender inferência na prática e comunicar limitações com transparência.
 
-**StatLab Experiments** é uma ferramenta analítica de alta fidelidade para **planejamento, análise e interpretação de testes A/B**.
+O projeto foi desenvolvido por **Felipe Alirio Baruja** como peça de portfólio, unindo estatística frequentista aplicada e engenharia full-stack (Next.js + FastAPI no mesmo domínio Vercel).
 
-O projeto transforma conceitos de estatística frequentista em uma interface limpa, objetiva e visualmente premium, permitindo que Product Engineers, Data Analysts, Product Managers e times de crescimento tomem decisões com mais clareza durante ciclos de experimentação.
-
-A proposta é unir três pilares:
-
-- **rigor estatístico** para evitar conclusões precipitadas;
-- **clareza visual** para facilitar a interpretação;
-- **decisão acionável** para transformar resultados em próximos passos.
-
-> **Objetivo:** reduzir a distância entre teoria estatística e decisão prática em experimentos de produto.
+> **Study / Simulation Notice**  
+> O StatLab é um ambiente de estudo e demonstração. Ele **não** substitui uma plataforma de experimentação em produção, nem deve ser usado sozinho para decisões de rollout sem revisão metodológica.
 
 ---
 
-## 🎯 Problema que resolve
+## ✨ Product Preview
 
-Testes A/B são comuns em produtos digitais, mas muitas decisões ainda são tomadas com base em leitura superficial de métricas. Isso pode gerar falsos vencedores, encerramento precoce de experimentos, confusão entre significância estatística e impacto prático, além de relatórios inconsistentes entre times.
+<p align="center">
+  <a href="https://frontend-gamma-blush-15.vercel.app">
+    <strong>Abrir demo ao vivo → https://frontend-gamma-blush-15.vercel.app</strong>
+  </a>
+</p>
 
-O **StatLab Experiments** foi criado para atacar esses problemas com uma experiência simples, visual e tecnicamente consistente.
+A interface em PT-BR oferece:
+- header com badges de stack e links para Portfólio / GitHub;
+- botão **Carregar dados de demonstração** (fixture + pipeline automático);
+- abas **Planejar** (tamanho amostral) e **Analisar** (Z-test + Bonferroni);
+- gráfico comparativo A/B (Recharts);
+- card de decisão com cores semânticas e relatório copiável.
 
----
-
-## ✨ Funcionalidades principais
-
-### 🧪 Planejamento de experimentos
-
-- Cálculo de tamanho de amostra.
-- Configuração de conversão base.
-- Definição de MDE, alpha e poder estatístico.
-- Apoio ao planejamento antes da execução do teste.
-- Redução do risco de experimentos subdimensionados.
-
-### 📈 Análise estatística
-
-- Teste frequentista para proporções.
-- Z-test para comparação entre grupos A/B.
-- Cálculo de diferença absoluta e relativa.
-- Interpretação automática do resultado.
-- Separação clara entre resultado estatístico e decisão prática.
-
-### 🧠 Motor de decisão em três estados
-
-O sistema classifica o resultado do experimento em três estados principais:
-
-- **Winner Probable:** há sinal estatístico e efeito relevante.
-- **Inconclusive:** não há evidência suficiente para uma decisão forte.
-- **Weak Effect:** há sinal, mas o impacto prático pode ser insuficiente.
-
-Essa estrutura ajuda a evitar decisões binárias simplistas do tipo “ganhou” ou “perdeu”.
-
-### 🛡️ Guardrails de significância prática
-
-- Diferencia significância estatística de relevância de negócio.
-- Ajuda a identificar efeitos pequenos demais para justificar rollout.
-- Evita que uma melhora estatisticamente detectável seja tratada automaticamente como vitória operacional.
-
-### 📝 Reporting profissional
-
-- Geração rápida de relatórios.
-- Texto pronto para Slack, Jira, Notion ou documentação interna.
-- Padronização da comunicação entre produto, engenharia e dados.
-- Menos tempo gasto reescrevendo interpretações.
+Screenshots estáticos podem ser adicionados em `assets/screenshots/` (pasta já preparada).
 
 ---
 
-## 🧩 Casos de uso
+## 2. Por que este projeto importa? / Why this project matters
 
-- Planejar um teste A/B antes do lançamento.
-- Validar se uma mudança de produto gerou impacto real.
-- Comparar conversões entre variante controle e variante teste.
-- Documentar decisões em ciclos de experimentação.
-- Criar relatórios rápidos para squads, stakeholders ou gestão.
-- Treinar leitura crítica de resultados estatísticos.
+* **Falsos positivos são caros:** múltiplas comparações sem correção inflacionam o Erro Tipo I. O StatLab expõe Bonferroni como input editável.
+* **Significância ≠ impacto:** um efeito estatisticamente significativo pode ser pequeno demais para justificar rollout — daí o estado **Weak Effect**.
+* **Amostra insuficiente é comum:** o módulo de planejamento usa Cohen's *h* + `NormalIndPower` para dimensionar o experimento antes de “olhar o p-value”.
+* **Full-stack real:** frontend Next.js e API Python científica no **mesmo domínio** via Vercel Services — não é só um notebook estático.
 
 ---
 
-<a id="en"></a>
+## 🧠 O diferencial do StatLab / What makes StatLab different
 
-## 🇺🇸 English
+### Português
+O StatLab não é só um calculador. Ele combina planejamento amostral, inferência e comunicação de decisão em uma experiência única.
 
-## 📊 Overview
+Ele mostra não apenas se o teste “passou”, mas também:
+- qual alpha foi usado após Bonferroni;
+- se o efeito absoluto é praticamente relevante;
+- como o intervalo de confiança se comporta;
+- o que acontece quando o número de comparações aumenta;
+- um relatório textual pronto para copiar.
 
-**StatLab Experiments** is a high-fidelity analytical tool for **planning, analyzing and interpreting A/B tests**.
+### English
+StatLab is not just a calculator. It combines sample-size planning, inference and decision communication in one experience.
 
-The project transforms frequentist statistical concepts into a clean, actionable and visually premium interface, helping Product Engineers, Data Analysts, Product Managers and growth teams make clearer decisions during experimentation cycles.
-
-It combines three core principles:
-
-- **statistical rigor** to avoid premature conclusions;
-- **visual clarity** to improve interpretation;
-- **actionable decision support** to turn results into next steps.
-
-> **Goal:** reduce the gap between statistical theory and practical product decisions.
-
----
-
-## 🎯 Problem solved
-
-A/B tests are common in digital products, but many decisions are still made based on superficial metric reading. This can lead to false winners, early stopping, confusion between statistical significance and practical impact, and inconsistent reporting across teams.
-
-**StatLab Experiments** addresses these issues with a simple, visual and technically consistent experience.
+It shows not only whether a test “passed”, but also:
+- which alpha was used after Bonferroni;
+- whether the absolute effect is practically relevant;
+- how the confidence interval behaves;
+- what happens when the number of comparisons increases;
+- a copy-ready textual report.
 
 ---
 
-## ✨ Key capabilities
+## 🎯 Problema que resolve / The problem it solves
 
-### 🧪 Experiment planning
+Em ciclos reais de experimentação, decisões costumam falhar por:
+- leitura superficial de uplift sem p-value / IC;
+- ausência de correção para múltiplas hipóteses;
+- confusão entre significância estatística e relevância prática;
+- experimentos subdimensionados;
+- relatórios inconsistentes entre produto, dados e engenharia.
 
-- Sample size calculation.
-- Baseline conversion configuration.
-- MDE, alpha and statistical power settings.
-- Planning support before running the test.
-- Lower risk of underpowered experiments.
-
-### 📈 Statistical analysis
-
-- Frequentist testing for proportions.
-- Z-test for A/B group comparison.
-- Absolute and relative difference calculation.
-- Automated result interpretation.
-- Clear separation between statistical result and practical decision.
-
-### 🧠 Three-state decision engine
-
-The system classifies experiment outcomes into three main states:
-
-- **Winner Probable:** statistical signal and relevant effect.
-- **Inconclusive:** insufficient evidence for a strong decision.
-- **Weak Effect:** signal exists, but the practical impact may be too small.
-
-This prevents oversimplified binary decisions such as “won” or “lost”.
-
-### 🛡️ Practical significance guardrails
-
-- Distinguishes statistical significance from business relevance.
-- Helps detect effects that are too small to justify rollout.
-- Prevents statistically detectable improvements from being automatically treated as operational wins.
-
-### 📝 Professional reporting
-
-- Quick report generation.
-- Copy-ready text for Slack, Jira, Notion or internal documentation.
-- Standardized communication across product, engineering and data teams.
-- Less time spent rewriting interpretations.
+O **StatLab Experiments** cria uma camada clara entre o cálculo estatístico e a interpretação acionável.
 
 ---
 
-## 🧩 Use cases
+## 🧩 Proposta / Analytical Pipeline
 
-- Plan an A/B test before launch.
-- Validate whether a product change created measurable impact.
-- Compare conversions between control and treatment variants.
-- Document decisions across experimentation cycles.
-- Create quick reports for squads, stakeholders or leadership.
-- Train critical reading of statistical results.
+```txt
+Inputs de planejamento (baseline, MDE, alpha, power)
+  ↓
+Cohen's h + NormalIndPower → n por grupo
+  ↓
+Inputs de análise (visitantes/conversões A e B, alpha, n_comparisons)
+  ↓
+Z-test de proporções (statsmodels)
+  ↓
+alpha_adjusted = alpha / max(1, n_comparisons)  [Bonferroni]
+  ↓
+IC assintótico com z crítico ajustado
+  ↓
+Motor de decisão: Winner / Weak Effect / Inconclusive
+  ↓
+UI: gráfico + card colorido + relatório copiável
+```
 
 ---
 
-<a id="tech-stack"></a>
+## ⚙️ Funcionalidades Principais / Core Features
 
-## 🛠 Tech Stack
+### Planejar (sample size)
+- Conversão base, MDE, alpha e poder.
+- Cálculo de `n_per_group` com formatação `pt-BR`.
+- Validação de inputs fora do domínio (0, 1).
+
+### Analisar (Z-test + Bonferroni)
+- Visitantes e conversões A/B.
+- Alpha e número de comparações.
+- Retorno de `p_value`, `uplift`, conversões, IC, `alpha_adjusted`, `status`, `interpretation`.
+
+### Demo em um clique
+- `GET /api/demo` popula o fixture e executa o pipeline completo.
+- Caso padrão: 1000/50 vs 1000/74 → **Winner** com `n_comparisons = 1`.
+- Com `n_comparisons = 5` o mesmo p-value vira **Inconclusive** (alpha ajustado 0.01).
+
+### Motor de decisão (3 estados)
+| Status | Critério |
+|---|---|
+| **Winner** | `p < alpha_adjusted` e `\|diff\| > 0.005` |
+| **Weak Effect** | `p < alpha_adjusted` e `\|diff\| ≤ 0.005` |
+| **Inconclusive** | `p ≥ alpha_adjusted` |
+
+Cores semânticas na UI: verde `#16a34a`, âmbar `#d97706`, cinza `#64748b`.
+
+---
+
+## 🛠️ Stack / Tecnologias
 
 ### Frontend
+- **Framework:** Next.js 16 (App Router) & React 19
+- **Linguagem:** TypeScript
+- **Estilização:** Tailwind CSS v4
+- **Gráficos:** Recharts
+- **Toasts / ícones:** Sonner, Lucide React
 
-- **Next.js** — App Router
-- **TypeScript**
-- **Tailwind CSS**
-- **shadcn/ui**
-- **Recharts**
-
-### Backend
-
-- **FastAPI**
-- **Python 3.11+**
-- **SciPy**
-- **statsmodels**
-- Stateless API architecture
-
-### Design
-
-- Minimalist interface
-- High-typography focus
-- Apple-esque restraint
-- Premium analytical dashboard aesthetics
-- Visual hierarchy optimized for decision-making
+### Backend (serverless no mesmo deploy)
+- **Framework API:** FastAPI (Python 3.12)
+- **Validação:** Pydantic v2
+- **Estatística:** SciPy + statsmodels + NumPy
+- **Deploy:** Vercel Services (`web` + `api` no mesmo domínio)
 
 ---
 
-## 📁 Project Structure / Estrutura do projeto
+## 🧱 Arquitetura / Architecture
 
-```txt
-statlab-experiments/
+Monorepo com app de produção em `frontend/` (root directory do Vercel):
+
+```text
+StatLab-Experiments/
 ├── frontend/
 │   ├── api/
-│   │   ├── index.py            # FastAPI (Vercel Services / Python)
-│   │   └── requirements.txt    # Python deps do service api
-│   ├── app/                    # Next.js App Router
-│   │   ├── page.tsx            # Página principal (PT-BR)
-│   │   ├── layout.tsx          # Root layout com metadados
-│   │   └── globals.css         # Tailwind v4
-│   ├── public/                 # Static assets
-│   ├── requirements.txt        # Python dependencies (espelho)
-│   ├── vercel.json             # Vercel Services + rewrites públicos
+│   │   ├── index.py              # FastAPI (health, demo, sample-size, analyze)
+│   │   └── requirements.txt
+│   ├── app/
+│   │   ├── page.tsx              # UI PT-BR (Planejar / Analisar)
+│   │   ├── layout.tsx
+│   │   └── globals.css
+│   ├── requirements.txt
+│   ├── vercel.json               # Vercel Services + rewrites públicos
 │   └── package.json
 │
-├── backend/
-│   ├── app/
-│   │   ├── main.py             # FastAPI entrypoint (original)
-│   │   ├── schemas.py          # Request/response models
-│   │   ├── statistics.py       # Statistical calculations
-│   │   └── interpretation.py   # Decision engine
-│   ├── requirements.txt
-│   └── tests/
-│
+├── backend/                      # Referência local histórica (não é o deploy Vercel)
 ├── docs/
+│   ├── architecture-guardrails.md
 │   ├── api-contract.md
 │   └── capabilities.md
-│
-├── portfolio-project-handoff.md   # Documento de handoff completo
-├── start.bat                      # Local stack bootstrap (Windows)
-├── README.md
-└── .gitignore
+├── assets/
+│   ├── icon.png
+│   └── screenshots/              # (opcional) capturas para o README
+├── portfolio-project-handoff.md
+├── start.bat
+└── README.md
 ```
 
-> Ajuste esta árvore conforme a estrutura real do repositório.
+### Arquitetura canônica de produção
+
+- Projeto Vercel: **`frontend`**
+- URL: https://frontend-gamma-blush-15.vercel.app
+- Contrato da API: status em inglês (`Winner` / `Weak Effect` / `Inconclusive`), campo `alpha_adjusted`, fixture `analysis`
+- **Não** usar `API_BACKEND_URL` nem projeto API paralelo para o demo ao vivo
+
+Detalhes: [`docs/architecture-guardrails.md`](./docs/architecture-guardrails.md)
 
 ---
 
-<a id="quick-start--início-rápido"></a>
-
-## 🚀 Quick Start / Início rápido
-
-### Requirements / Pré-requisitos
-
-- Python 3.11+
-- Node.js 18+
-- npm, pnpm or yarn
-- Windows PowerShell or terminal
-
-### Option 1 — Automatic startup / Inicialização automática
-
-Run the bootstrap script in the project root:
-
-```bash
-start.bat
-```
-
-The script should:
-
-1. Create or activate the Python virtual environment.
-2. Install backend dependencies.
-3. Install frontend dependencies.
-4. Start the FastAPI backend.
-5. Start the Next.js frontend.
-
-Open:
+## 🔁 Data Flow Pipeline
 
 ```txt
-http://localhost:3000
+Browser (same origin)
+  ↓
+GET  /api/health | /api/demo
+POST /api/calculate-sample-size
+POST /api/analyze
+  ↓
+FastAPI service (Vercel Services → api/index.py)
+  ↓
+SciPy / statsmodels
+  ↓
+JSON → UI (chart + decision card + copy report)
 ```
 
-### Option 2 — Manual startup / Inicialização manual
+---
 
-#### Backend
+## 🚀 Quick Start / Início Rápido
 
-```bash
-cd backend
-python -m venv .venv
+### Pré-requisitos
+- **Node.js** 20+ (recomendado 24)
+- **Python** 3.12+
+- **Git**
+- Conta Vercel (para deploy)
 
-# Windows
-.venv\Scripts\activate
+### Opção 1 — Demo em produção
+Abra: [https://frontend-gamma-blush-15.vercel.app](https://frontend-gamma-blush-15.vercel.app)
 
-# Linux/macOS
-source .venv/bin/activate
-
-pip install -r requirements.txt
-uvicorn app.main:app --reload
-```
-
-#### Frontend
-
+### Opção 2 — Frontend local + API em produção (rápido)
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
+> Em desenvolvimento puro local, as rotas `/api/*` precisam do runtime Python (ex.: `vercel dev` a partir de `frontend/`).
 
-Open:
-
-```txt
-http://localhost:3000
+### Opção 3 — Deploy
+```bash
+cd frontend
+vercel --prod
 ```
 
 ---
 
-<a id="estatística--statistics"></a>
-
-## 📐 Estatística / Statistics
-
-### Experiment planning
-
-The planning module estimates sample size based on:
-
-- baseline conversion rate;
-- minimum detectable effect;
-- alpha level;
-- desired statistical power.
-
-### Analysis
-
-The analysis module compares two proportions using a frequentist approach.
-
-Typical inputs:
-
-- control visitors;
-- control conversions;
-- treatment visitors;
-- treatment conversions;
-- alpha;
-- minimum practical effect.
-
-Typical outputs:
-
-- conversion rates;
-- absolute lift;
-- relative lift;
-- p-value;
-- confidence interval;
-- statistical significance;
-- practical significance;
-- decision state;
-- human-readable interpretation.
-
----
-
-## 🧠 Decision framework / Estrutura de decisão
-
-```txt
-Statistically significant + practically relevant
-→ Winner Probable
-
-Not statistically significant
-→ Inconclusive
-
-Statistically significant + practically weak
-→ Weak Effect
-```
-
-This decision layer is designed to prevent misuse of p-values and to make experimentation results easier to communicate.
-
----
-
-## 📝 Report example / Exemplo de relatório
-
-```txt
-Experiment result: Inconclusive
-
-The treatment variant showed a positive lift, but the result did not reach the configured statistical significance threshold. Based on the current sample size and observed effect, there is not enough evidence to recommend rollout.
-
-Recommended next step: continue collecting data or redesign the experiment with a larger expected effect.
-```
-
----
-
-## 🧪 Quality / Qualidade
-
-Recommended validation layers:
-
-- Unit tests for statistical functions.
-- API tests for FastAPI endpoints.
-- Frontend validation for form inputs.
-- Snapshot or component tests for decision cards.
-- Manual validation with known statistical examples.
+## 🧪 Scripts e Validações / Scripts and Checks
 
 ```bash
-# Backend tests
-pytest
-
-# Frontend checks
+cd frontend
 npm run lint
-npm run typecheck
 npm run build
 ```
 
----
+Smoke da API em produção (PowerShell):
 
-## 🛡️ Responsible usage / Uso responsável
-
-StatLab Experiments is a decision-support tool, not a replacement for analytical judgment.
-
-Before acting on an experiment result:
-
-- Check whether the experiment ran long enough.
-- Confirm that traffic allocation was correct.
-- Review instrumentation and event tracking.
-- Avoid peeking and stopping tests prematurely.
-- Consider practical impact, not only p-values.
-- Document assumptions and limitations.
+```powershell
+Invoke-RestMethod https://frontend-gamma-blush-15.vercel.app/api/health
+Invoke-RestMethod https://frontend-gamma-blush-15.vercel.app/api/demo
+```
 
 ---
 
-## 🚧 Roadmap
+## 📊 Metodologia Estatística / Statistical Methodology
 
-- [ ] Bayesian interpretation mode
-- [ ] Sequential testing warnings
-- [ ] Experiment history
-- [ ] Export as PDF
-- [ ] Shareable report links
-- [ ] Multi-metric experiments
-- [ ] Guardrails for sample ratio mismatch
-- [ ] Power curve visualization
-- [ ] Minimum practical effect presets
-- [ ] Integration with analytics tools
+- **Cohen's h + NormalIndPower:** dimensionamento amostral para proporções.
+- **Z-test de duas proporções:** `statsmodels.stats.proportion.proportions_ztest`.
+- **Bonferroni:** `alpha_adjusted = alpha / max(1, n_comparisons)`.
+- **IC assintótico normal:** `z = norm.ppf(1 - alpha_adjusted/2)`.
+- **Relevância prática:** limiar absoluto `|p_b - p_a| > 0.005` para separar Winner de Weak Effect.
+
+Limitações conhecidas: IC assintótico (impreciso em amostras pequenas ou taxas perto de 0/1); apenas métricas de proporção; cold start Python no Vercel.
 
 ---
 
-## 🚀 Deploy ao vivo
+## 🧭 Roadmap
 
-O StatLab Experiments está publicado no **Vercel** com backend Python serverless integrado:
-
-| | |
-|---|---|
-| **URL de produção** | [https://frontend-gamma-blush-15.vercel.app](https://frontend-gamma-blush-15.vercel.app) |
-| **Tipo** | Next.js + FastAPI via Vercel Services (mesmo domínio) |
-| **Stack do deploy** | Python 3.12, SciPy, statsmodels, FastAPI |
-| **Root directory** | `frontend/` |
-| **Projeto Vercel** | `frontend` (não usar projetos API paralelos) |
-
-### Arquitetura canônica de produção
-
-- Frontend e API compartilham **um único domínio** via `frontend/vercel.json` (`services` + rewrites).
-- Contrato da API: status em inglês (`Winner` / `Weak Effect` / `Inconclusive`), campo `alpha_adjusted`, fixture `GET /api/demo` com chave `analysis`.
-- **Não** apontar o frontend para um backend externo via `API_BACKEND_URL` / proxy Flask — isso quebra o contrato e o botão de demo.
-- Deploy de produção: a partir de `frontend/` com `vercel --prod` no projeto `frontend`.
-
-> 📄 Handoff: [`portfolio-project-handoff.md`](./portfolio-project-handoff.md) · Guardrails: [`docs/architecture-guardrails.md`](./docs/architecture-guardrails.md)
+- [x] UI PT-BR + demo one-click
+- [x] Bonferroni exposto na UI
+- [x] Deploy unificado Next.js + FastAPI (Vercel Services)
+- [ ] Testes automatizados (pytest / Vitest)
+- [ ] Curva de poder
+- [ ] Métricas contínuas
+- [ ] Screenshots oficiais em `assets/screenshots/`
 
 ---
 
-<a id="autor--author"></a>
+## 💼 Valor para Portfólio / Portfolio Value
+
+O StatLab demonstra:
+- **Estatística aplicada** com correção de múltiplas comparações e decisão não-binária;
+- **API científica** em Python (SciPy / statsmodels) em produção serverless;
+- **Frontend moderno** (Next.js 16 + TypeScript + Tailwind v4);
+- **Deploy full-stack** no mesmo domínio, com contrato de API estável.
+
+Portfólio: [barujafe.vercel.app](https://barujafe.vercel.app/)
+
+---
+
+## 📚 Documentação Complementar
+
+- [`docs/architecture-guardrails.md`](./docs/architecture-guardrails.md) — regras canônicas de produção
+- [`docs/api-contract.md`](./docs/api-contract.md) — contrato da API
+- [`docs/capabilities.md`](./docs/capabilities.md) — capacidades
+- [`portfolio-project-handoff.md`](./portfolio-project-handoff.md) — handoff completo
+
+---
+
+## 🔖 GitHub Repository Metadata
+
+### About sugerido
+```txt
+Plan and interpret A/B tests with Z-test, Bonferroni correction and a 3-state decision engine (Winner / Inconclusive / Weak Effect).
+```
+
+### Topics sugeridos
+```txt
+ab-testing
+statistics
+bonferroni
+fastapi
+nextjs
+typescript
+python
+scipy
+statsmodels
+vercel
+portfolio-project
+experimentation
+sample-size
+```
+
+---
 
 ## 👤 Autor / Author
 
-Developed by **BarujaFe1**.
+Desenvolvido por **Felipe Alirio Baruja**.
 
-- **Portfolio:** [https://barujafe.vercel.app/](https://barujafe.vercel.app/)
-- **GitHub:** [github.com/BarujaFe1](https://github.com/BarujaFe1/)
-- **Repository:** [github.com/BarujaFe1/StatLab-Experiments](https://github.com/BarujaFe1/StatLab-Experiments)
-- **LinkedIn:** [linkedin.com/in/barujafe](https://www.linkedin.com/in/barujafe/)
-
----
-
-## 📄 License / Licença
-
-License to be defined.
-
-Licença a definir.
+- **Portfolio:** [barujafe.vercel.app](https://barujafe.vercel.app/)
+- **GitHub:** [@BarujaFe1](https://github.com/BarujaFe1)
+- **LinkedIn:** [Gustavo Felipe Alirio Baruja](https://www.linkedin.com/in/barujafe/)
+- **Live demo:** [frontend-gamma-blush-15.vercel.app](https://frontend-gamma-blush-15.vercel.app)
 
 ---
 
-<div align="center">
-  <p><strong>StatLab Experiments</strong></p>
-  <p>Statistical rigor for faster, clearer and safer product decisions.</p>
-  <p><em>Rigor estatístico para decisões de produto mais rápidas, claras e seguras.</em></p>
-</div>
+## 📄 Licença / License
+
+MIT License. Copyright (c) 2026 Felipe Alirio Baruja.
