@@ -10,7 +10,7 @@
 | **Tipo de projeto** | Aplicação web full-stack (Next.js + FastAPI via Vercel Services, mesmo domínio) |
 | **Objetivo principal** | Planejamento e interpretação de testes A/B com rigor estatístico, correção de Bonferroni e motor de decisão em 3 estados (Winner / Inconclusive / Weak Effect) |
 | **Status atual** | Publicado, funcional e validado |
-| **URL de produção** | [https://frontend-gamma-blush-15.vercel.app](https://frontend-gamma-blush-15.vercel.app) |
+| **URL de produção** | [https://statlab-experiments.vercel.app](https://statlab-experiments.vercel.app) |
 | **Repositório** | [https://github.com/BarujaFe1/StatLab-Experiments](https://github.com/BarujaFe1/StatLab-Experiments) |
 | **Contexto de criação** | Projeto de portfólio pessoal para demonstrar competências em estatística frequentista, inferência, análise de dados, frontend moderno (Next.js 16), backend Python serverless (FastAPI) e deploy integrado no ecossistema Vercel. |
 
@@ -170,8 +170,8 @@ statlab-experiments/
 | **Repositório** | GitHub — [BarujaFe1/StatLab-Experiments](https://github.com/BarujaFe1/StatLab-Experiments) (branch `feat/vercel-site`) |
 | **Hospedagem** | Vercel (plano Hobby) |
 | **Root directory do projeto Vercel** | `frontend/` |
-| **URL de produção** | [https://frontend-gamma-blush-15.vercel.app](https://frontend-gamma-blush-15.vercel.app) |
-| **Alias atual** | `frontend-gamma-blush-15.vercel.app` (gerado pelo Vercel) |
+| **URL de produção** | [https://statlab-experiments.vercel.app](https://statlab-experiments.vercel.app) |
+| **Alias atual** | `statlab-experiments.vercel.app` (gerado pelo Vercel) |
 | **Proteção** | Desabilitada (deployment público, sem Vercel Auth) |
 | **Build** | Automático via Vercel (Next.js detectado + Python `api/` auto-build) |
 | **Tempo de deploy** | ~50s (inclui instalação de dependências Python via `uv`) |
@@ -368,7 +368,7 @@ Projetos de portfólio devem carregar rápido e demonstrar habilidade com CSS mo
 | **Lista de tecnologias** | Next.js 16, TypeScript, Tailwind CSS, FastAPI, Python, SciPy, statsmodels, NumPy, Pydantic, Recharts, Vercel |
 | **Categoria** | Estatística & Experimentação |
 | **Status** | Publicado e funcional |
-| **Link de demo** | [https://frontend-gamma-blush-15.vercel.app](https://frontend-gamma-blush-15.vercel.app) |
+| **Link de demo** | [https://statlab-experiments.vercel.app](https://statlab-experiments.vercel.app) |
 | **Link do repositório** | [https://github.com/BarujaFe1/StatLab-Experiments](https://github.com/BarujaFe1/StatLab-Experiments) |
 | **Destaque principal** | Z-test com correção de Bonferroni + motor de decisão em 3 estados |
 | **Bullets de impacto** | — Cálculo de tamanho amostral com Cohen's h e poder estatístico<br/>— Z-test com correção de Bonferroni e alpha ajustado<br/>— Motor de decisão não-binário: Winner, Inconclusive, Weak Effect<br/>— Botão de demonstração com dados fictícios e execução automática<br/>— Backend Python serverless integrado ao frontend Next.js no Vercel<br/>— UI completa em português com gráfico Recharts e relatório copiável |
@@ -409,7 +409,7 @@ Projetos de portfólio devem carregar rápido e demonstrar habilidade com CSS mo
     <span class="tag">statsmodels</span>
   </div>
   <div class="project-actions">
-    <a href="https://frontend-gamma-blush-15.vercel.app" class="btn btn-primary">
+    <a href="https://statlab-experiments.vercel.app" class="btn btn-primary">
       Abrir demo
     </a>
     <a href="https://github.com/BarujaFe1/StatLab-Experiments" class="btn btn-secondary">
@@ -428,7 +428,7 @@ Ferramenta para planejar e interpretar testes A/B com Z-test, correção de Bonf
 
 `Next.js` `TypeScript` `FastAPI` `SciPy` `statsmodels`
 
-[Abrir demo](https://frontend-gamma-blush-15.vercel.app) · [GitHub](https://github.com/BarujaFe1/StatLab-Experiments)
+[Abrir demo](https://statlab-experiments.vercel.app) · [GitHub](https://github.com/BarujaFe1/StatLab-Experiments)
 ```
 
 ---
@@ -442,7 +442,7 @@ Ferramenta para planejar e interpretar testes A/B com Z-test, correção de Bonf
 
 **Stack:** Next.js 16 · TypeScript · FastAPI · SciPy · statsmodels · Tailwind CSS · Recharts · Vercel  
 **Status:** Publicado e funcional  
-**Demo:** [https://frontend-gamma-blush-15.vercel.app](https://frontend-gamma-blush-15.vercel.app)  
+**Demo:** [https://statlab-experiments.vercel.app](https://statlab-experiments.vercel.app)  
 **Repositório:** [https://github.com/BarujaFe1/StatLab-Experiments](https://github.com/BarujaFe1/StatLab-Experiments)
 
 ---

@@ -26,7 +26,7 @@
   </p>
 
   <p>
-    <a href="https://frontend-gamma-blush-15.vercel.app">
+    <a href="https://statlab-experiments.vercel.app">
       <img alt="Live demo" src="https://img.shields.io/badge/Live%20Demo-Abrir%20StatLab-16a34a?style=for-the-badge" />
     </a>
   </p>
@@ -50,8 +50,8 @@ O projeto foi desenvolvido por **Felipe Alirio Baruja** como peça de portfólio
 ## ✨ Product Preview
 
 <p align="center">
-  <a href="https://frontend-gamma-blush-15.vercel.app">
-    <strong>Abrir demo ao vivo → https://frontend-gamma-blush-15.vercel.app</strong>
+  <a href="https://statlab-experiments.vercel.app">
+    <strong>Abrir demo ao vivo → https://statlab-experiments.vercel.app</strong>
   </a>
 </p>
 
@@ -213,7 +213,7 @@ StatLab-Experiments/
 ### Arquitetura canônica de produção
 
 - Projeto Vercel: **`frontend`**
-- URL: https://frontend-gamma-blush-15.vercel.app
+- URL: https://statlab-experiments.vercel.app
 - Contrato da API: status em inglês (`Winner` / `Weak Effect` / `Inconclusive`), campo `alpha_adjusted`, fixture `analysis`
 - **Não** usar `API_BACKEND_URL` nem projeto API paralelo para o demo ao vivo
 
@@ -248,7 +248,7 @@ JSON → UI (chart + decision card + copy report)
 - Conta Vercel (para deploy)
 
 ### Opção 1 — Demo em produção
-Abra: [https://frontend-gamma-blush-15.vercel.app](https://frontend-gamma-blush-15.vercel.app)
+Abra: [https://statlab-experiments.vercel.app](https://statlab-experiments.vercel.app)
 
 ### Opção 2 — Frontend local + API em produção (rápido)
 ```bash
@@ -277,8 +277,8 @@ npm run build
 Smoke da API em produção (PowerShell):
 
 ```powershell
-Invoke-RestMethod https://frontend-gamma-blush-15.vercel.app/api/health
-Invoke-RestMethod https://frontend-gamma-blush-15.vercel.app/api/demo
+Invoke-RestMethod https://statlab-experiments.vercel.app/api/health
+Invoke-RestMethod https://statlab-experiments.vercel.app/api/demo
 ```
 
 ---
@@ -361,7 +361,7 @@ Desenvolvido por **Felipe Alirio Baruja**.
 - **Portfolio:** [barujafe.vercel.app](https://barujafe.vercel.app/)
 - **GitHub:** [@BarujaFe1](https://github.com/BarujaFe1)
 - **LinkedIn:** [Gustavo Felipe Alirio Baruja](https://www.linkedin.com/in/barujafe/)
-- **Live demo:** [frontend-gamma-blush-15.vercel.app](https://frontend-gamma-blush-15.vercel.app)
+- **Live demo:** [statlab-experiments.vercel.app](https://statlab-experiments.vercel.app)
 
 ---
 

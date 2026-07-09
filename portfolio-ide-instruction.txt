@@ -16,7 +16,7 @@ Você é um assistente de frontend especializado em Next.js + TypeScript + Tailw
 
 ### LINKS
 
-- **Demo:** https://frontend-gamma-blush-15.vercel.app
+- **Demo:** https://statlab-experiments.vercel.app
 - **Repositório GitHub:** https://github.com/BarujaFe1/StatLab-Experiments
 
 ### BULLETS DE IMPACTO (para usar no card ou seção expandida)
@@ -32,7 +32,7 @@ Você é um assistente de frontend especializado em Next.js + TypeScript + Tailw
 
 O card do StatLab Experiments **já existe** no portfólio, mas pode estar com o link de demonstração desatualizado ou quebrado (apontando para localhost ou rota inexistente). Você deve **atualizar** o card existente — não criar um novo — e garantir que:
 
-1. O link "Abrir demo" aponte para https://frontend-gamma-blush-15.vercel.app
+1. O link "Abrir demo" aponte para https://statlab-experiments.vercel.app
 2. A descrição corresponda à versão mais recente do projeto
 3. A stack de tecnologias esteja correta (TypeScript, Next.js, Python, FastAPI, SciPy, statsmodels)
 4. O status badge continue "Deployed"
@@ -50,7 +50,7 @@ O card do StatLab Experiments **já existe** no portfólio, mas pode estar com o
 
 3. **Encontre o componente ou bloco de dados do StatLab Experiments.** Pode ser um arquivo de dados JSON/TS com a lista de projetos, ou um componente React que renderiza os cards. O card do StatLab já existe; você precisa apenas **atualizar os campos** conforme as informações acima.
 
-4. **Atualize o link de demo** de qualquer valor antigo para: https://frontend-gamma-blush-15.vercel.app
+4. **Atualize o link de demo** de qualquer valor antigo para: https://statlab-experiments.vercel.app
 
 5. **Atualize a descrição** se necessário para a versão curta fornecida.
 
@@ -82,7 +82,7 @@ O card do StatLab Experiments **já existe** no portfólio, mas pode estar com o
   subtitle: "Deployed · Estatística & Experimentação",
   description: "Ferramenta para planejar e interpretar testes A/B com Z-test, correção de Bonferroni e motor de decisão em 3 estados (Winner / Inconclusive / Weak Effect).",
   tags: ["TypeScript", "Next.js", "Python", "FastAPI", "SciPy", "statsmodels"],
-  demoUrl: "https://frontend-gamma-blush-15.vercel.app",
+  demoUrl: "https://statlab-experiments.vercel.app",
   githubUrl: "https://github.com/BarujaFe1/StatLab-Experiments",
   bullets: [
     "Cálculo de tamanho amostral com Cohen's h e poder estatístico",
@@ -110,7 +110,7 @@ Estatística aplicada e experimentação · Deployed
 [Abrir demo]  [GitHub]
 ```
 
-Se o link "Abrir demo" estiver quebrado ou apontando para localhost:8000 ou para uma rota inválida, corrija para https://frontend-gamma-blush-15.vercel.app.
+Se o link "Abrir demo" estiver quebrado ou apontando para localhost:8000 ou para uma rota inválida, corrija para https://statlab-experiments.vercel.app.
 
 ---
 
