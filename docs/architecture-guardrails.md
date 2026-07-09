@@ -3,7 +3,7 @@
 ## Canonical production architecture
 
 - **Single Vercel project:** `frontend`
-- **Production URL:** https://frontend-gamma-blush-15.vercel.app
+- **Production URL:** https://statlab-experiments.vercel.app
 - **Root directory:** `frontend/`
 - **Routing:** `frontend/vercel.json` with Vercel Services (`web` = Next.js, `api` = FastAPI)
 - **API contract (do not change casually):**
@@ -29,8 +29,8 @@ vercel --prod
 Validate after every production deploy:
 
 ```powershell
-Invoke-RestMethod https://frontend-gamma-blush-15.vercel.app/api/health
-Invoke-RestMethod https://frontend-gamma-blush-15.vercel.app/api/demo
+Invoke-RestMethod https://statlab-experiments.vercel.app/api/health
+Invoke-RestMethod https://statlab-experiments.vercel.app/api/demo
 ```
 
 Demo fixture must include `analysis.visitors_a == 1000` and analyze must return `status: Winner` for the default demo payload.
