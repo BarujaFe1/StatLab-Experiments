@@ -1,0 +1,117 @@
+## TEXTO PARA ENVIAR À IDE DO PORTFÓLIO
+
+Você é um assistente de frontend especializado em Next.js + TypeScript + Tailwind CSS. Sua missão é editar o site de portfólio em https://barujafe.vercel.app/ para atualizar ou corrigir o card do projeto **StatLab Experiments** na seção **Projetos Selecionados**.
+
+---
+
+### INFORMAÇÕES DO PROJETO
+
+- **Nome do projeto:** StatLab Experiments
+- **Subtítulo:** Planejamento e interpretação de testes A/B
+- **Status:** Deployed
+- **Categoria:** Estatística & Experimentação
+- **Descrição curta (para card):** Ferramenta para planejar e interpretar testes A/B com Z-test, correção de Bonferroni e motor de decisão em 3 estados (Winner / Inconclusive / Weak Effect).
+- **Descrição média (para página/seção expandida):** O StatLab Experiments é uma ferramenta analítica que calcula tamanho amostral, executa Z-test com correção de Bonferroni e classifica o resultado como Winner, Inconclusive ou Weak Effect. Útil para aprender inferência na prática, simular riscos de falso positivo e comunicar limitações estatísticas com transparência.
+- **Stack (tags):** TypeScript, Next.js, Python, FastAPI, SciPy, statsmodels
+
+### LINKS
+
+- **Demo:** https://frontend-gamma-blush-15.vercel.app
+- **Repositório GitHub:** https://github.com/BarujaFe1/StatLab-Experiments
+
+### BULLETS DE IMPACTO (para usar no card ou seção expandida)
+
+- Cálculo de tamanho amostral com Cohen's h e poder estatístico
+- Z-test com correção de Bonferroni e alpha ajustado
+- Motor de decisão não-binário: Winner, Inconclusive, Weak Effect
+- Botão de demonstração com dados fictícios e execução automática
+- Backend Python serverless integrado ao frontend Next.js no Vercel
+- UI completa em português com gráfico Recharts e relatório copiável
+
+### STATUS DO PROJETO NO PORTFÓLIO
+
+O card do StatLab Experiments **já existe** no portfólio, mas pode estar com o link de demonstração desatualizado ou quebrado (apontando para localhost ou rota inexistente). Você deve **atualizar** o card existente — não criar um novo — e garantir que:
+
+1. O link "Abrir demo" aponte para https://frontend-gamma-blush-15.vercel.app
+2. A descrição corresponda à versão mais recente do projeto
+3. A stack de tecnologias esteja correta (TypeScript, Next.js, Python, FastAPI, SciPy, statsmodels)
+4. O status badge continue "Deployed"
+
+### INSTRUÇÕES DETALHADAS
+
+1. **Acesse o repositório do portfólio.** O site https://barujafe.vercel.app/ é um projeto Next.js hospedado no Vercel. Encontre o repositório vinculado e clone/faça checkout da branch principal.
+
+2. **Localize a seção de projetos.** O portfólio tem uma seção chamada "Projetos Selecionados" (em português). Nela, os projetos são listados como cards. Cada card possui:
+   - Um título (ex: "StatLab Experiments")
+   - Um subtítulo com badge de status (ex: "Deployed") e categoria (ex: "Estatística & Experimentação")
+   - Um parágrafo de descrição
+   - Tags de tecnologia (pequenos badges coloridos: TypeScript, Next.js, Python, FastAPI, etc.)
+   - Botões de ação: "Abrir demo" (primário) e "GitHub" (secundário/outline)
+
+3. **Encontre o componente ou bloco de dados do StatLab Experiments.** Pode ser um arquivo de dados JSON/TS com a lista de projetos, ou um componente React que renderiza os cards. O card do StatLab já existe; você precisa apenas **atualizar os campos** conforme as informações acima.
+
+4. **Atualize o link de demo** de qualquer valor antigo para: https://frontend-gamma-blush-15.vercel.app
+
+5. **Atualize a descrição** se necessário para a versão curta fornecida.
+
+6. **Atualize a stack** se faltar alguma tecnologia. A lista correta é: TypeScript, Next.js, Python, FastAPI, SciPy, statsmodels.
+
+7. **Preserve o layout.** Não altere a estrutura visual do card, o design system, as cores, os tamanhos de fonte, os espaçamentos ou qualquer outro aspecto visual do portfólio. Apenas troque os textos e links do StatLab.
+
+8. **Valide a responsividade.** Após as alterações, verifique se o card se comporta bem em mobile e desktop.
+
+9. **Faça deploy.** Após confirmar que está tudo correto, execute `vercel --prod` para publicar.
+
+### RESTRIÇÕES ABSOLUTAS
+
+- ⛔ NÃO altere o layout, design, cores, fontes ou estrutura do portfólio.
+- ⛔ NÃO modifique textos, descrições ou links de outros projetos (DataFlow, Maestro, LançaEnsaio, etc.).
+- ⛔ NÃO adicione seções novas.
+- ⛔ NÃO redesenhe o site inteiro.
+- ✅ Apenas atualize as informações do StatLab Experiments no local onde ele já existe.
+- ✅ Se o StatLab ainda não estiver na lista de projetos (apenas em caso de não encontrar), adicione-o imediatamente após o DataFlow, seguindo exatamente o mesmo padrão dos demais cards.
+- ✅ Use os links exatos de demo e GitHub fornecidos acima.
+- ✅ A descrição deve ficar em português, como os demais projetos.
+
+### ESTRUTURA ESPERADA DO CARD (exemplo conceitual)
+
+```tsx
+// Exemplo da estrutura que você pode encontrar. Não force este formato — adapte-se ao padrão real do código-fonte.
+{
+  title: "StatLab Experiments",
+  subtitle: "Deployed · Estatística & Experimentação",
+  description: "Ferramenta para planejar e interpretar testes A/B com Z-test, correção de Bonferroni e motor de decisão em 3 estados (Winner / Inconclusive / Weak Effect).",
+  tags: ["TypeScript", "Next.js", "Python", "FastAPI", "SciPy", "statsmodels"],
+  demoUrl: "https://frontend-gamma-blush-15.vercel.app",
+  githubUrl: "https://github.com/BarujaFe1/StatLab-Experiments",
+  bullets: [
+    "Cálculo de tamanho amostral com Cohen's h e poder estatístico",
+    "Z-test com correção de Bonferroni e alpha ajustado",
+    "Motor de decisão não-binário: Winner, Inconclusive, Weak Effect",
+    "Botão de demonstração com dados fictícios e execução automática",
+    "Backend Python serverless integrado ao frontend Next.js no Vercel",
+    "UI completa em português com gráfico Recharts e relatório copiável"
+  ]
+}
+```
+
+### REFERÊNCIA VISUAL (extraído do portfólio atual)
+
+O card do StatLab atualmente se parece com:
+
+```
+[StatLab Experiments]
+Estatística aplicada e experimentação · Deployed
+
+[descrição existente — pode estar desatualizada]
+
+[badges: TypeScript, Next.js, Python, FastAPI, SciPy, statsmodels]
+
+[Abrir demo]  [GitHub]
+```
+
+Se o link "Abrir demo" estiver quebrado ou apontando para localhost:8000 ou para uma rota inválida, corrija para https://frontend-gamma-blush-15.vercel.app.
+
+---
+
+### PRONTO. Finalize e retorne a URL de produção após o deploy confirmado.
