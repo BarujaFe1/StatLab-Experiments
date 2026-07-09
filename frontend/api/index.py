@@ -6,7 +6,6 @@ import math
 import numpy as np
 from statsmodels.stats.power import NormalIndPower
 from statsmodels.stats.proportion import proportions_ztest
-from mangum import Mangum
 
 app = FastAPI(title="StatLab API")
 
@@ -34,15 +33,21 @@ class AnalysisRequest(BaseModel):
     n_comparisons: int = 1
 
 
-def interpret_result(p_val, p_a, p_b, ci_low, ci_high, alpha_adjusted):
+def interpret_result(p_val, p_a, p_b, alpha_adjusted):
     diff = p_b - p_a
     is_practically_significant = abs(diff) > 0.005
 
     if p_val < alpha_adjusted:
         if is_practically_significant:
+            if diff > 0:
+                return (
+                    "Winner",
+                    "A Variante B supera a Variante A com significância estatística "
+                    "e relevância prática após a correção de Bonferroni.",
+                )
             return (
                 "Winner",
-                "A Variante B supera a Variante A com significância estatística "
+                "A Variante A supera a Variante B com significância estatística "
                 "e relevância prática após a correção de Bonferroni.",
             )
         return (
@@ -65,7 +70,16 @@ def health():
 @app.post("/api/calculate-sample-size")
 def calculate_sample_size(req: SampleSizeRequest):
     p1 = req.baseline_conversion
+    if not (0 < p1 < 1):
+        return {"error": "baseline_conversion must be between 0 and 1 (exclusive)"}
+    if req.mde <= 0:
+        return {"error": "mde must be greater than zero"}
     p2 = p1 + req.mde
+    if not (0 < p2 < 1):
+        return {"error": "baseline_conversion + mde must be between 0 and 1 (exclusive)"}
+    if not (0 < req.alpha < 1) or not (0 < req.power < 1):
+        return {"error": "alpha and power must be between 0 and 1 (exclusive)"}
+
     h = 2 * (math.asin(math.sqrt(p1)) - math.asin(math.sqrt(p2)))
     analysis = NormalIndPower()
     n = analysis.solve_power(effect_size=abs(h), alpha=req.alpha, power=req.power, ratio=1)
@@ -76,6 +90,10 @@ def calculate_sample_size(req: SampleSizeRequest):
 def analyze(req: AnalysisRequest):
     if req.visitors_a <= 0 or req.visitors_b <= 0:
         return {"error": "visitors must be greater than zero"}
+    if req.conversions_a < 0 or req.conversions_b < 0:
+        return {"error": "conversions cannot be negative"}
+    if req.conversions_a > req.visitors_a or req.conversions_b > req.visitors_b:
+        return {"error": "conversions cannot exceed visitors"}
 
     n_comparisons = max(1, int(req.n_comparisons))
     alpha_adjusted = req.alpha / n_comparisons
@@ -86,7 +104,7 @@ def analyze(req: AnalysisRequest):
     p_a = req.conversions_a / req.visitors_a
     p_b = req.conversions_b / req.visitors_b
 
-    z_stat, p_val = proportions_ztest(count, nobs)
+    _z_stat, p_val = proportions_ztest(count, nobs)
 
     variance_a = (p_a * (1 - p_a)) / req.visitors_a
     variance_b = (p_b * (1 - p_b)) / req.visitors_b
@@ -97,7 +115,7 @@ def analyze(req: AnalysisRequest):
     ci_low = diff - z_crit * se
     ci_high = diff + z_crit * se
 
-    status, interpretation = interpret_result(p_val, p_a, p_b, ci_low, ci_high, alpha_adjusted)
+    status, interpretation = interpret_result(p_val, p_a, p_b, alpha_adjusted)
 
     return {
         "p_value": float(p_val),
@@ -134,6 +152,3 @@ def demo():
         },
         "note": "Fixture de demonstração: teste A/B com 1.000 visitantes por grupo. Tente aumentar o Nº de comparações (Bonferroni) para ver a classificação mudar.",
     }
-
-
-handler = Mangum(app)

@@ -46,44 +46,71 @@ export default function Home() {
   const [alphaAnalyze, setAlphaAnalyze] = useState('0.05');
   const [nComparisons, setNComparisons] = useState('1');
   const [loadingDemo, setLoadingDemo] = useState(false);
+  const [loadingPlan, setLoadingPlan] = useState(false);
+  const [loadingAnalyze, setLoadingAnalyze] = useState(false);
   const [analysis, setAnalysis] = useState<AnalysisResult | null>(null);
 
   const calculateSample = async () => {
+    const baselineVal = parseFloat(baseline);
+    const mdeVal = parseFloat(mde);
+    const alphaVal = parseFloat(alphaPlan);
+    const powerVal = parseFloat(power);
+    if ([baselineVal, mdeVal, alphaVal, powerVal].some((v) => Number.isNaN(v))) {
+      toast.error('Preencha todos os campos com números válidos');
+      return;
+    }
+    setLoadingPlan(true);
     try {
       const res = await fetch('/api/calculate-sample-size', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          baseline_conversion: parseFloat(baseline),
-          mde: parseFloat(mde),
-          alpha: parseFloat(alphaPlan),
-          power: parseFloat(power),
+          baseline_conversion: baselineVal,
+          mde: mdeVal,
+          alpha: alphaVal,
+          power: powerVal,
         }),
       });
       const data = await res.json();
+      if (data.error) {
+        toast.error(data.error);
+        return;
+      }
+      if (typeof data.n_per_group !== 'number') {
+        toast.error('Resposta inválida do backend');
+        return;
+      }
       setSampleSize(data.n_per_group);
     } catch {
       toast.error('Falha ao conectar com o backend');
+    } finally {
+      setLoadingPlan(false);
     }
   };
 
   const analyze = async () => {
-    if (!visitorsA || !visitorsB) {
+    if (!visitorsA || !visitorsB || conversionsA === '' || conversionsB === '') {
       toast.error('Preencha todos os campos');
       return;
     }
+    const payload = {
+      visitors_a: parseInt(visitorsA, 10),
+      conversions_a: parseInt(conversionsA, 10),
+      visitors_b: parseInt(visitorsB, 10),
+      conversions_b: parseInt(conversionsB, 10),
+      alpha: parseFloat(alphaAnalyze),
+      n_comparisons: parseInt(nComparisons, 10),
+    };
+    if (Object.values(payload).some((v) => Number.isNaN(v))) {
+      toast.error('Preencha todos os campos com números válidos');
+      return;
+    }
+    setLoadingAnalyze(true);
     try {
       const res = await fetch('/api/analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          visitors_a: parseInt(visitorsA),
-          conversions_a: parseInt(conversionsA),
-          visitors_b: parseInt(visitorsB),
-          conversions_b: parseInt(conversionsB),
-          alpha: parseFloat(alphaAnalyze),
-          n_comparisons: parseInt(nComparisons),
-        }),
+        body: JSON.stringify(payload),
       });
       const data = await res.json();
       if (data.error) {
@@ -93,6 +120,8 @@ export default function Home() {
       setAnalysis(data);
     } catch {
       toast.error('Falha ao conectar com o backend');
+    } finally {
+      setLoadingAnalyze(false);
     }
   };
 
@@ -100,6 +129,7 @@ export default function Home() {
     setLoadingDemo(true);
     try {
       const res = await fetch('/api/demo');
+      if (!res.ok) throw new Error('demo failed');
       const { sample_size: ss, analysis: an } = await res.json();
 
       setBaseline(String(ss.baseline_conversion));
@@ -125,8 +155,12 @@ export default function Home() {
           power: ss.power,
         }),
       });
-      const { n_per_group } = await ssRes.json();
-      setSampleSize(n_per_group);
+      const ssData = await ssRes.json();
+      if (ssData.error || typeof ssData.n_per_group !== 'number') {
+        toast.error(ssData.error || 'Falha ao calcular tamanho amostral');
+        return;
+      }
+      setSampleSize(ssData.n_per_group);
 
       setActiveTab('analyze');
 
@@ -143,6 +177,10 @@ export default function Home() {
         }),
       });
       const anData = await anRes.json();
+      if (anData.error) {
+        toast.error(anData.error);
+        return;
+      }
       setAnalysis(anData);
 
       toast.success('Dados de demonstração carregados');
@@ -243,7 +281,7 @@ export default function Home() {
               className="w-full p-3 border rounded-lg"
               onChange={(e) => setMde(e.target.value)}
             />
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <input
                 placeholder="Alpha (ex. 0.05)"
                 value={alphaPlan}
@@ -259,9 +297,10 @@ export default function Home() {
             </div>
             <button
               onClick={calculateSample}
-              className="w-full bg-slate-900 text-white p-3 rounded-lg font-medium hover:bg-slate-800 transition"
+              disabled={loadingPlan || loadingDemo}
+              className="w-full bg-slate-900 text-white p-3 rounded-lg font-medium hover:bg-slate-800 transition disabled:opacity-60"
             >
-              Calcular
+              {loadingPlan ? 'Calculando...' : 'Calcular'}
             </button>
             {sampleSize && (
               <div className="pt-6 border-t mt-4">
@@ -273,7 +312,7 @@ export default function Home() {
         ) : (
           <section className="bg-white p-8 rounded-xl border border-slate-200 shadow-sm space-y-4">
             <h2 className="text-lg font-semibold text-slate-900">Análise do experimento</h2>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <input
                 placeholder="Visitantes A"
                 value={visitorsA}
@@ -299,7 +338,7 @@ export default function Home() {
                 onChange={(e) => setConversionsB(e.target.value)}
               />
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <input
                 placeholder="Alpha (ex. 0.05)"
                 value={alphaAnalyze}
@@ -316,13 +355,15 @@ export default function Home() {
             <div className="flex gap-2">
               <button
                 onClick={analyze}
-                className="flex-1 bg-slate-900 text-white p-3 rounded-lg font-medium hover:bg-slate-800 transition"
+                disabled={loadingAnalyze || loadingDemo}
+                className="flex-1 bg-slate-900 text-white p-3 rounded-lg font-medium hover:bg-slate-800 transition disabled:opacity-60"
               >
-                Analisar
+                {loadingAnalyze ? 'Analisando...' : 'Analisar'}
               </button>
               <button
                 onClick={loadDemo}
                 disabled={loadingDemo}
+                aria-label="Carregar dados de demonstração"
                 className="bg-emerald-600 text-white p-3 rounded-lg hover:bg-emerald-700 disabled:opacity-60"
               >
                 <FlaskConical size={16} />

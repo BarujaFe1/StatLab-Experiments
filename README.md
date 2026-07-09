@@ -234,14 +234,15 @@ This prevents oversimplified binary decisions such as “won” or “lost”.
 statlab-experiments/
 ├── frontend/
 │   ├── api/
-│   │   └── index.py            # FastAPI + Mangum (serverless Python)
+│   │   ├── index.py            # FastAPI (Vercel Services / Python)
+│   │   └── requirements.txt    # Python deps do service api
 │   ├── app/                    # Next.js App Router
 │   │   ├── page.tsx            # Página principal (PT-BR)
 │   │   ├── layout.tsx          # Root layout com metadados
 │   │   └── globals.css         # Tailwind v4
 │   ├── public/                 # Static assets
-│   ├── requirements.txt        # Python dependencies
-│   ├── vercel.json             # Vercel config (rewrites + public)
+│   ├── requirements.txt        # Python dependencies (espelho)
+│   ├── vercel.json             # Vercel Services + rewrites públicos
 │   └── package.json
 │
 ├── backend/
@@ -462,8 +463,8 @@ O StatLab Experiments está publicado no **Vercel** com backend Python serverles
 | | |
 |---|---|
 | **URL de produção** | [https://frontend-gamma-blush-15.vercel.app](https://frontend-gamma-blush-15.vercel.app) |
-| **Tipo** | Next.js + FastAPI Serverless (Tipo B) |
-| **Stack do deploy** | Python 3.12, SciPy, statsmodels, FastAPI, Mangum |
+| **Tipo** | Next.js + FastAPI via Vercel Services (mesmo domínio) |
+| **Stack do deploy** | Python 3.12, SciPy, statsmodels, FastAPI |
 | **Root directory** | `frontend/` |
 
 > 📄 Documento completo de handoff para portfólio: [`portfolio-project-handoff.md`](./portfolio-project-handoff.md)
