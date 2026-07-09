@@ -7,12 +7,12 @@
 | Campo | Valor |
 |---|---|
 | **Nome oficial** | StatLab Experiments |
-| **Tipo de projeto** | Aplicação web full-stack (Tipo B — Next.js + FastAPI Serverless) |
+| **Tipo de projeto** | Aplicação web full-stack (Next.js + FastAPI via Vercel Services, mesmo domínio) |
 | **Objetivo principal** | Planejamento e interpretação de testes A/B com rigor estatístico, correção de Bonferroni e motor de decisão em 3 estados (Winner / Inconclusive / Weak Effect) |
 | **Status atual** | Publicado, funcional e validado |
 | **URL de produção** | [https://frontend-gamma-blush-15.vercel.app](https://frontend-gamma-blush-15.vercel.app) |
 | **Repositório** | [https://github.com/BarujaFe1/StatLab-Experiments](https://github.com/BarujaFe1/StatLab-Experiments) |
-| **Contexto de criação** | Projeto de portfólio pessoal para demonstrar competências em estatística frequentista, inferência, análise de dados, frontend moderno (Next.js 16), backend serverless Python (FastAPI + Mangum) e deploy integrado no ecossistema Vercel. |
+| **Contexto de criação** | Projeto de portfólio pessoal para demonstrar competências em estatística frequentista, inferência, análise de dados, frontend moderno (Next.js 16), backend Python serverless (FastAPI) e deploy integrado no ecossistema Vercel. |
 
 ---
 
@@ -81,7 +81,7 @@ Mostrar, em um único site funcional, que o candidato domina **estatística infe
 - **Responsividade** via Tailwind (grid, breakpoints)
 
 ### Integrações
-- Backend serverless Python em `api/index.py` (FastAPI + Mangum)
+- Backend serverless Python em `api/index.py` (FastAPI via Vercel Services)
 - Consumo via `fetch` com rotas relativas `/api/*` (sem CORS em produção)
 - Rotas: `GET /api/health`, `GET /api/demo`, `POST /api/calculate-sample-size`, `POST /api/analyze`
 
@@ -109,7 +109,7 @@ Mostrar, em um único site funcional, que o candidato domina **estatística infe
 statlab-experiments/
 ├── frontend/                   # Next.js App Router (Vercel Root)
 │   ├── api/
-│   │   └── index.py            # FastAPI + Mangum (serverless Python)
+│   │   └── index.py            # FastAPI (Vercel Services / Python)
 │   ├── app/
 │   │   ├── page.tsx            # Página principal (tudo em um componente)
 │   │   ├── layout.tsx          # Root layout (Geist font, metadados)
@@ -138,7 +138,6 @@ statlab-experiments/
 | **Gráficos** | Recharts | 3.8.1 |
 | **Toast** | sonner | 2.0.7 |
 | **Backend framework** | FastAPI | 0.115.6 |
-| **Serverless adapter** | Mangum | 0.17.0 |
 | **Estatística** | SciPy, statsmodels, NumPy | 1.13 / 0.14 / 1.26 |
 | **Validação** | Pydantic | 2.10.3 |
 | **Hospedagem** | Vercel (Serverless + Next.js) | — |
@@ -147,7 +146,7 @@ statlab-experiments/
 
 - **Página única**: `app/page.tsx` contém todo o estado, lógica e JSX (arquitetura SPA simplificada para portfólio)
 - **Layout**: `app/layout.tsx` com fontes Geist, metadados PT-BR
-- **API serverless**: `api/index.py` contém FastAPI + Mangum + toda a lógica estatística em um arquivo único (sem divisão em módulos para simplicidade do deploy)
+- **API serverless**: `api/index.py` contém FastAPI + toda a lógica estatística em um arquivo único (sem divisão em módulos para simplicidade do deploy)
 - **Config**: `vercel.json` com `rewrites` para rotear `/api/*` ao handler Python
 
 ### Estratégia de UI/UX
@@ -245,7 +244,6 @@ statlab-experiments/
 
 ### Backend (Serverless)
 - **FastAPI** 0.115.6 (framework web assíncrono)
-- **Mangum** 0.17.0 (adaptador ASGI para Lambda/Vercel)
 - **SciPy** 1.13.1 (distribuições normais, valores críticos)
 - **statsmodels** 0.14.4 (NormalIndPower, proportions_ztest)
 - **NumPy** 1.26.4 (arrays, operações vetorizadas)
@@ -295,14 +293,14 @@ Projetos de portfólio devem carregar rápido e demonstrar habilidade com CSS mo
 ### Competências demonstradas
 - **Estatística frequentista**: teste de hipóteses, poder, tamanho de efeito, correção de múltiplas comparações.
 - **Python científico**: SciPy, statsmodels, NumPy — cálculo real servido via API.
-- **FastAPI + serverless**: API REST com Pydantic, deploy em Lambda/Vercel via Mangum.
+- **FastAPI + serverless**: API REST com Pydantic, deploy via Vercel Services no mesmo domínio.
 - **Next.js 16 + React 19**: App Router, server components, client components, hooks.
 - **TypeScript**: tipos, interfaces, tipagem estrita.
 - **UI/UX**: design minimalista, feedback visual, responsividade.
 - **Deploy integrado**: Next.js + Python no mesmo pipeline Vercel.
 
 ### Complexidade envolvida
-- Integração de runtime Python com frontend JavaScript no mesmo deploy Vercel (Tipo B).
+- Integração de runtime Python com frontend JavaScript no mesmo deploy Vercel (Services).
 - Lógica de inferência com correção de Bonferroni, cálculo de poder, IC ajustado.
 - Gerenciamento de estado React com múltiplos inputs e chamadas assíncronas sequenciais.
 - Construção de um motor de decisão não-binário (3 estados).
@@ -366,8 +364,8 @@ Projetos de portfólio devem carregar rápido e demonstrar habilidade com CSS mo
 | **Subtítulo** | Planejamento e interpretação de testes A/B |
 | **Descrição curta** | Ferramenta para planejar e interpretar testes A/B com Z-test, Bonferroni e motor de decisão em 3 estados (Winner / Inconclusive / Weak Effect). |
 | **Descrição média** | O StatLab Experiments é uma ferramenta analítica que calcula tamanho amostral, executa Z-test com correção de Bonferroni e classifica o resultado como Winner, Inconclusive ou Weak Effect. Útil para aprender inferência na prática, simular riscos de falso positivo e comunicar limitações estatísticas com transparência. |
-| **Descrição longa** | StatLab Experiments é um ambiente de estudo e demonstração de testes A/B com rigor estatístico. O projeto oferece cálculo de tamanho amostral baseado em Cohen's h e NormalIndPower, Z-test bilateral para proporções com correção de Bonferroni, e um motor de decisão em três estados que evita a simplificação binária "ganhou/perdeu". A interface em português com gráfico comparativo e card de decisão colorido facilita a interpretação. O backend serverless Python (FastAPI + Mangum) roda no mesmo deploy Vercel que o frontend Next.js 16, demonstrando integração full-stack real em produção. |
-| **Lista de tecnologias** | Next.js 16, TypeScript, Tailwind CSS, FastAPI, Python, SciPy, statsmodels, NumPy, Pydantic, Mangum, Recharts, Vercel |
+| **Descrição longa** | StatLab Experiments é um ambiente de estudo e demonstração de testes A/B com rigor estatístico. O projeto oferece cálculo de tamanho amostral baseado em Cohen's h e NormalIndPower, Z-test bilateral para proporções com correção de Bonferroni, e um motor de decisão em três estados que evita a simplificação binária "ganhou/perdeu". A interface em português com gráfico comparativo e card de decisão colorido facilita a interpretação. O backend serverless Python (FastAPI) roda no mesmo deploy Vercel que o frontend Next.js 16, demonstrando integração full-stack real em produção. |
+| **Lista de tecnologias** | Next.js 16, TypeScript, Tailwind CSS, FastAPI, Python, SciPy, statsmodels, NumPy, Pydantic, Recharts, Vercel |
 | **Categoria** | Estatística & Experimentação |
 | **Status** | Publicado e funcional |
 | **Link de demo** | [https://frontend-gamma-blush-15.vercel.app](https://frontend-gamma-blush-15.vercel.app) |
@@ -482,13 +480,13 @@ Diferente da abordagem binária, o motor considera significância estatística E
 
 ## Arquitetura
 
-O projeto segue o padrão **Tipo B** (Next.js + FastAPI Serverless no Vercel):
+O projeto segue o padrão Next.js + FastAPI via Vercel Services (mesmo domínio):
 
 ```
 [Browser] ──GET /──→ [Next.js (frontend/)]
    │
    └──POST /api/*──→ [Python Serverless (api/index.py)]
-                      ├── FastAPI + Mangum
+                      ├── FastAPI
                       ├── SciPy + statsmodels
                       └── Pydantic (schemas)
 ```

@@ -466,8 +466,16 @@ O StatLab Experiments está publicado no **Vercel** com backend Python serverles
 | **Tipo** | Next.js + FastAPI via Vercel Services (mesmo domínio) |
 | **Stack do deploy** | Python 3.12, SciPy, statsmodels, FastAPI |
 | **Root directory** | `frontend/` |
+| **Projeto Vercel** | `frontend` (não usar projetos API paralelos) |
 
-> 📄 Documento completo de handoff para portfólio: [`portfolio-project-handoff.md`](./portfolio-project-handoff.md)
+### Arquitetura canônica de produção
+
+- Frontend e API compartilham **um único domínio** via `frontend/vercel.json` (`services` + rewrites).
+- Contrato da API: status em inglês (`Winner` / `Weak Effect` / `Inconclusive`), campo `alpha_adjusted`, fixture `GET /api/demo` com chave `analysis`.
+- **Não** apontar o frontend para um backend externo via `API_BACKEND_URL` / proxy Flask — isso quebra o contrato e o botão de demo.
+- Deploy de produção: a partir de `frontend/` com `vercel --prod` no projeto `frontend`.
+
+> 📄 Handoff: [`portfolio-project-handoff.md`](./portfolio-project-handoff.md) · Guardrails: [`docs/architecture-guardrails.md`](./docs/architecture-guardrails.md)
 
 ---
 
