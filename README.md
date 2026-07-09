@@ -19,7 +19,7 @@
     <img src="https://img.shields.io/badge/Status-MVP-orange.svg" alt="Status MVP" />
     <img src="https://img.shields.io/badge/Interface-Web%20App-blue.svg" alt="Interface Web App" />
     <img src="https://img.shields.io/badge/Frontend-Next.js-black.svg?logo=next.js&logoColor=white" alt="Next.js" />
-    <img src="https://img.shields.io/badge/Backend-FastAPI-009688.svg?logo=fastapi&logoColor=white" alt="FastAPI" />
+    <img src="https://img.shields.io/badge/Backend-Flask-009688.svg?logo=flask&logoColor=white" alt="Flask" />
     <img src="https://img.shields.io/badge/Language-TypeScript-3178C6.svg?logo=typescript&logoColor=white" alt="TypeScript" />
     <img src="https://img.shields.io/badge/Python-3.11+-3776AB.svg?logo=python&logoColor=white" alt="Python 3.11+" />
     <img src="https://img.shields.io/badge/Statistics-Frequentist-7C3AED.svg" alt="Frequentist Statistics" />
@@ -206,7 +206,7 @@ This prevents oversimplified binary decisions such as “won” or “lost”.
 
 ### Backend
 
-- **FastAPI**
+- **Flask** (WSGI — compatível com funções serverless da Vercel)
 - **Python 3.11+**
 - **SciPy**
 - **statsmodels**
@@ -226,28 +226,26 @@ This prevents oversimplified binary decisions such as “won” or “lost”.
 
 ```txt
 statlab-experiments/
-├── frontend/
-│   ├── app/                    # Next.js App Router
-│   ├── components/             # UI components
-│   ├── lib/                    # Frontend utilities
-│   ├── public/                 # Static assets
+├── frontend/                   # Next.js (Vercel project: frontend)
+│   ├── app/                    # App Router
+│   │   ├── layout.tsx
+│   │   └── page.tsx            # UI principal (Planejar / Analisar)
+│   ├── next.config.ts          # Rewrite /api/* -> API_BACKEND_URL
 │   └── package.json
 │
-├── backend/
-│   ├── app/
-│   │   ├── main.py             # FastAPI entrypoint
-│   │   ├── schemas.py          # Request/response models
-│   │   ├── statistics.py       # Statistical calculations
-│   │   └── interpretation.py   # Decision engine
-│   ├── requirements.txt
-│   └── tests/
+├── api-server/                 # Flask WSGI (Vercel project: statlab-experiments-api)
+│   ├── api/
+│   │   ├── index.py            # Backend canônico (produção)
+│   │   └── tests/              # Suíte pytest (16 testes)
+│   ├── conftest.py
+│   └── requirements.txt        # flask, scipy, statsmodels, numpy
 │
-├── start.bat                   # Local stack bootstrap for Windows
+├── start.bat                   # Bootstrap local (Windows)
 ├── README.md
 └── .gitignore
 ```
 
-> Ajuste esta árvore conforme a estrutura real do repositório.
+> Em produção: dois projetos Vercel. O frontend faz proxy de `/api/*` para `API_BACKEND_URL` (api-server).
 
 ---
 
@@ -272,11 +270,10 @@ start.bat
 
 The script should:
 
-1. Create or activate the Python virtual environment.
-2. Install backend dependencies.
-3. Install frontend dependencies.
-4. Start the FastAPI backend.
-5. Start the Next.js frontend.
+1. Install frontend dependencies (if needed).
+2. Install backend dependencies from `api-server/requirements.txt`.
+3. Start the Flask backend (`api-server/api/index.py` on port 5000).
+4. Start the Next.js frontend (proxies `/api/*` to the Flask API).
 
 Open:
 
@@ -286,21 +283,15 @@ http://localhost:3000
 
 ### Option 2 — Manual startup / Inicialização manual
 
-#### Backend
+#### Backend (API Flask)
 
 ```bash
-cd backend
-python -m venv .venv
-
-# Windows
-.venv\Scripts\activate
-
-# Linux/macOS
-source .venv/bin/activate
-
+cd api-server
 pip install -r requirements.txt
-uvicorn app.main:app --reload
+python api/index.py
 ```
+
+A API sobe em `http://127.0.0.1:5000` e o Next.js faz proxy de `/api/*` para ela em desenvolvimento (via `next.config.ts`).
 
 #### Frontend
 
@@ -392,16 +383,17 @@ Recommended next step: continue collecting data or redesign the experiment with 
 Recommended validation layers:
 
 - Unit tests for statistical functions.
-- API tests for FastAPI endpoints.
+- API tests for Flask endpoints.
 - Frontend validation for form inputs.
 - Snapshot or component tests for decision cards.
 - Manual validation with known statistical examples.
 
 ```bash
 # Backend tests
-pytest
+python -m pytest api-server/api/tests
 
 # Frontend checks
+cd frontend
 npm run lint
 npm run typecheck
 npm run build

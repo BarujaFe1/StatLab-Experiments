@@ -14,7 +14,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "StatLab Experiments",
-  description: "Planejamento e interpretação de testes A/B com rigor estatístico",
+  description:
+    "Planeje e interprete testes A/B com rigor estatístico, Bonferroni e decisão em três estados.",
 };
 
 export default function RootLayout({

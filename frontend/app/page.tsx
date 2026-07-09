@@ -4,6 +4,29 @@ import { useState } from 'react';
 import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import { Toaster, toast } from 'sonner';
 
+interface AnalysisResult {
+  p_value: number;
+  alpha_ajustado: number;
+  uplift: number;
+  conversion_a: number;
+  conversion_b: number;
+  ci_low: number;
+  ci_high: number;
+  significant: boolean;
+  status: string;
+  interpretation: string;
+}
+
+interface AnalysisInput {
+  visitors_a: number;
+  conversions_a: number;
+  visitors_b: number;
+  conversions_b: number;
+  alpha: number;
+  n_comparisons: number;
+  mpe?: number;
+}
+
 export default function Home() {
   const [activeTab, setActiveTab] = useState<'plan' | 'analyze'>('plan');
 
@@ -17,7 +40,7 @@ export default function Home() {
   const [conversionsB, setConversionsB] = useState('');
   const [alpha, setAlpha] = useState('0.05');
   const [comparisons, setComparisons] = useState('1');
-  const [analysis, setAnalysis] = useState<any>(null);
+  const [analysis, setAnalysis] = useState<AnalysisResult | null>(null);
 
   const calculateSample = async () => {
     try {
@@ -27,13 +50,17 @@ export default function Home() {
         body: JSON.stringify({ baseline_conversion: parseFloat(baseline), mde: parseFloat(mde) })
       });
       const data = await res.json();
+      if (!res.ok) {
+        toast.error(data.error || "Não foi possível calcular o tamanho amostral");
+        return;
+      }
       setSampleSize(data.n_per_group);
-    } catch (e) {
+    } catch {
       toast.error("Erro ao conectar ao servidor");
     }
   };
 
-  const analyze = async (override?: any) => {
+  const analyze = async (override?: AnalysisInput) => {
     const body = override || {
       visitors_a: parseInt(visitorsA),
       conversions_a: parseInt(conversionsA),
@@ -53,8 +80,13 @@ export default function Home() {
         body: JSON.stringify(body)
       });
       const data = await res.json();
+      if (!res.ok) {
+        toast.error(data.error || "Não foi possível analisar o experimento");
+        setAnalysis(null);
+        return;
+      }
       setAnalysis(data);
-    } catch (e) {
+    } catch {
       toast.error("Erro ao conectar ao servidor");
     }
   };
@@ -63,6 +95,10 @@ export default function Home() {
     try {
       const res = await fetch('/api/demo');
       const data = await res.json();
+      if (!res.ok) {
+        toast.error(data.error || "Erro ao carregar dados de demonstração");
+        return;
+      }
       const d = data.analyze;
       setVisitorsA(String(d.visitors_a));
       setConversionsA(String(d.conversions_a));
@@ -73,7 +109,7 @@ export default function Home() {
       setBaseline(String(data.sample_size.baseline_conversion));
       setMde(String(data.sample_size.mde));
       analyze(d);
-    } catch (e) {
+    } catch {
       toast.error("Erro ao carregar dados de demonstração");
     }
   };
@@ -94,6 +130,12 @@ export default function Home() {
     toast.success("Relatório copiado para a área de transferência");
   };
 
+  const statusColor: Record<string, string> = {
+    Vencedor: '#16a34a',
+    'Efeito Fraco': '#d97706',
+    Inconclusivo: '#64748b',
+  };
+
   return (
     <main className="min-h-screen bg-slate-50 font-sans">
       <Toaster position="top-center" />
@@ -105,7 +147,7 @@ export default function Home() {
             <div className="hidden sm:flex items-center gap-1.5 text-xs">
               <span className="px-2 py-0.5 rounded bg-zinc-900 text-white">Next.js</span>
               <span className="px-2 py-0.5 rounded bg-blue-600 text-white">TypeScript</span>
-              <span className="px-2 py-0.5 rounded bg-teal-600 text-white">FastAPI</span>
+              <span className="px-2 py-0.5 rounded bg-teal-600 text-white">Flask</span>
               <span className="px-2 py-0.5 rounded bg-purple-600 text-white">SciPy</span>
               <span className="px-2 py-0.5 rounded bg-amber-600 text-white">statsmodels</span>
             </div>
@@ -141,17 +183,17 @@ export default function Home() {
           </section>
         ) : (
           <section className="bg-white p-8 rounded-xl border border-slate-200 shadow-sm space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <input placeholder="Visitantes A" value={visitorsA} className="p-3 border rounded-lg" onChange={(e) => setVisitorsA(e.target.value)} />
-              <input placeholder="Conversões A" value={conversionsA} className="p-3 border rounded-lg" onChange={(e) => setConversionsA(e.target.value)} />
-              <input placeholder="Visitantes B" value={visitorsB} className="p-3 border rounded-lg" onChange={(e) => setVisitorsB(e.target.value)} />
-              <input placeholder="Conversões B" value={conversionsB} className="p-3 border rounded-lg" onChange={(e) => setConversionsB(e.target.value)} />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <input placeholder="Visitantes A" value={visitorsA} className="p-3 border rounded-lg w-full" onChange={(e) => setVisitorsA(e.target.value)} />
+              <input placeholder="Conversões A" value={conversionsA} className="p-3 border rounded-lg w-full" onChange={(e) => setConversionsA(e.target.value)} />
+              <input placeholder="Visitantes B" value={visitorsB} className="p-3 border rounded-lg w-full" onChange={(e) => setVisitorsB(e.target.value)} />
+              <input placeholder="Conversões B" value={conversionsB} className="p-3 border rounded-lg w-full" onChange={(e) => setConversionsB(e.target.value)} />
             </div>
-            <div className="grid grid-cols-2 gap-4 text-sm">
-              <input placeholder="Alpha (ex: 0.05)" value={alpha} className="p-3 border rounded-lg" onChange={(e) => setAlpha(e.target.value)} />
-              <input placeholder="Comparações (Bonferroni)" value={comparisons} className="p-3 border rounded-lg" onChange={(e) => setComparisons(e.target.value)} />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+              <input placeholder="Alpha (ex: 0.05)" value={alpha} className="p-3 border rounded-lg w-full" onChange={(e) => setAlpha(e.target.value)} />
+              <input placeholder="Comparações (Bonferroni)" value={comparisons} className="p-3 border rounded-lg w-full" onChange={(e) => setComparisons(e.target.value)} />
             </div>
-            <div className="flex gap-2">
+            <div className="flex flex-col sm:flex-row gap-2">
               <button onClick={() => analyze()} className="flex-1 bg-slate-900 text-white p-3 rounded-lg font-medium hover:bg-slate-800 transition">Analisar</button>
               <button onClick={loadDemo} className="bg-slate-100 p-3 rounded-lg hover:bg-slate-200 text-sm font-medium">Carregar dados de demonstração</button>
             </div>
@@ -168,7 +210,7 @@ export default function Home() {
                 </div>
                 <div className="bg-white p-6 rounded-xl border border-slate-200">
                   <p className="text-sm text-slate-500 font-medium uppercase tracking-wider mb-2">Decisão</p>
-                  <p className="text-lg font-semibold text-slate-900">{analysis.status}</p>
+                  <p className="text-lg font-semibold" style={{ color: statusColor[analysis.status] || '#0f172a' }}>{analysis.status}</p>
                   <p className="text-sm text-slate-600 mt-2">{analysis.interpretation}</p>
                   <div className="mt-4 grid grid-cols-2 gap-3 text-sm text-slate-500">
                     <div><span className="font-medium">p-valor:</span> {analysis.p_value.toFixed(4)}</div>

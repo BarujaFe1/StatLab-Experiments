@@ -12,8 +12,8 @@ Transformar a V1 em um produto de portfólio maduro, com foco em UX premium, int
 6. **Copy Report**: Relatório estruturado para Slack/Linear.
 
 ## Arquitetura e Impacto
-- **Backend**: Adição de lógica de inferência no `backend/app/services/analysis.py`.
-- **Frontend**: Refatoração do layout para grid semântico e melhor uso de shadcn.
+- **Backend**: Lógica de inferência em `api-server/api/index.py` (Flask WSGI).
+- **Frontend**: UI de decisão em `frontend/app/page.tsx`; proxy `/api/*` via `next.config.ts`.
 
 ## Riscos
 - Risco de excesso de informação: Mitigaremos mantendo detalhes técnicos em seções opcionais (colapsáveis).

@@ -1,4 +1,4 @@
-# StatLab Experiments: Functional Capabilities (V1)
+# StatLab Experiments: Functional Capabilities (V1.1)
 
 StatLab Experiments is a high-precision, stateless analytical tool designed to bridge the gap between frequentist statistics and actionable product insights.
 
@@ -19,31 +19,27 @@ The "Plan" module calculates the required sample size to ensure statistical powe
 The "Analyze" module evaluates the outcomes of a completed A/B test.
 - **Input Parameters:**
   - Visitors and Conversions for both Variant A and Variant B.
+  - Alpha, number of comparisons (Bonferroni), and optional minimum practical effect (MPE).
 - **Calculations performed:**
   - **Conversion Rates**: Observed performance per variant.
   - **Uplift**: Relative performance improvement.
   - **P-Value**: Calculated via `proportions_ztest` (Z-test for two independent proportions).
-  - **Confidence Interval**: Estimated range for the observed difference.
-- **Interpretation Logic**: Automatically flags results as "Significant" or "Inconclusive" based on a configurable Alpha.
+  - **Confidence Interval**: `norm.ppf(1 - alpha/2)` around the absolute difference.
+  - **Adjusted Alpha**: Bonferroni correction (`alpha / n_comparisons`).
+- **Decision states**: `Vencedor`, `Inconclusivo`, or `Efeito Fraco` (statistical signal × practical relevance).
 
 ---
 
 ## 2. Interface and Experience Features
 
-- **Unified Workflow**: Toggle-based navigation between Planning and Analysis modules, maintaining state and context.
-- **Visual Clarity**:
-  - Comparative bar charts for conversion rate visualization.
-  - Responsive design with a minimal, professional aesthetic.
-- **Productivity Utilities**:
-  - **Demo Data**: One-click "Load Example" functionality for rapid testing.
-  - **Report Export**: "Copy report to clipboard" feature for quick sharing of analysis summaries with stakeholders.
-- **System Robustness**:
-  - Real-time UI feedback via toast notifications for input validation and backend connectivity.
-  - Clear error states and user-friendly messaging for ambiguous or underpowered results.
+- **Unified Workflow**: Toggle-based navigation between Planning and Analysis modules.
+- **Visual Clarity**: Comparative bar charts and a decision-first results card.
+- **Productivity Utilities**: One-click demo data and copy-ready report text.
+- **System Robustness**: Toast feedback for validation errors and connectivity failures.
 
 ---
 
 ## 3. Technical Implementation
-- **Architecture**: Stateless (no database), decouple Frontend (Next.js) from Backend (FastAPI).
-- **Communication**: Strict API contracts via Pydantic schemas.
-- **Deployability**: Optimized for instant deployment on Vercel (front) and Render/Fly.io (back).
+- **Architecture**: Stateless (no database). Frontend (Next.js) proxies `/api/*` to a Flask WSGI API.
+- **Deploy**: Two Vercel projects — Next frontend + Flask `api-server` — linked by `API_BACKEND_URL`.
+- **Quality**: pytest suite for the API; ESLint + TypeScript checks for the frontend.

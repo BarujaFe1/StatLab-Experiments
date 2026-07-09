@@ -1,20 +1,25 @@
 @echo off
 echo Checking StatLab environment...
 
-:: Check for backend virtual environment
-if not exist "backend\venv" (
-    echo Virtual environment not found. Creating it...
-    python -m venv backend\venv
-    echo Installing dependencies...
-    call "backend\venv\Scripts\activate"
-    pip install fastapi uvicorn scipy statsmodels pytest pydantic fastapi-cors
+:: Frontend dependencies
+if not exist "frontend\node_modules" (
+    echo Installing frontend dependencies...
+    cd frontend
+    call npm install
+    cd ..
 )
 
-echo Starting StatLab Experiments...
+:: Backend dependencies (api-server)
+if exist "api-server\requirements.txt" (
+    echo Ensuring backend dependencies...
+    pip install -r api-server\requirements.txt -q
+)
 
-start "Backend" cmd /k "cd backend && venv\Scripts\activate && uvicorn app.main:app --reload"
-start "Frontend" cmd /k "cd frontend && npm run dev"
+echo Starting StatLab Experiments (Flask API + Next.js)...
+
+start "Backend (Flask API)" cmd /k "cd api-server && python api/index.py"
+start "Frontend (Next.js)" cmd /k "cd frontend && npm run dev"
 
 echo StatLab started. Opening browser...
-timeout /t 5 >nul
+timeout /t 6 >nul
 start http://localhost:3000
