@@ -19,12 +19,55 @@ def test_demo_structure():
     r = client.get("/api/demo")
     assert r.status_code == 200
     data = r.get_json()
-    assert set(data) == {"sample_size", "analyze"}
+    assert "sample_size" in data and "analyze" in data and "scenarios" in data
     assert "baseline_conversion" in data["sample_size"]
     assert "visitors_a" in data["analyze"]
+    assert "vencedor" in data["scenarios"]
 
 
-def test_sample_size_matches_formula():
+def test_scenarios_endpoint():
+    r = client.get("/api/scenarios")
+    assert r.status_code == 200
+    scenarios = r.get_json()["scenarios"]
+    assert set(scenarios) >= {"vencedor", "efeito_fraco", "inconclusivo", "zero_conversoes"}
+
+
+def test_sample_size_includes_methodology_fields():
+    payload = {"baseline_conversion": 0.05, "mde": 0.01, "alpha": 0.05, "power": 0.80}
+    data = client.post("/api/calculate-sample-size", json=payload).get_json()
+    assert data["n_per_group"] > 0
+    assert data["effect_size_h"] > 0
+    assert "note" in data
+    assert data["power"] == 0.80
+
+
+def test_analyze_includes_practical_fields_and_next_steps():
+    payload = {"visitors_a": 10000, "conversions_a": 500,
+               "visitors_b": 10000, "conversions_b": 580,
+               "alpha": 0.05, "n_comparisons": 3, "mpe": 0.005}
+    data = client.post("/api/analyze", json=payload).get_json()
+    assert data["status"] == "Vencedor"
+    assert "absolute_diff" in data
+    assert data["practically_significant"] is True
+    assert isinstance(data["next_steps"], list) and len(data["next_steps"]) >= 2
+
+
+def test_scenario_efeito_fraco_status():
+    from api.index import SCENARIOS
+    payload = SCENARIOS["efeito_fraco"]["analyze"]
+    data = client.post("/api/analyze", json=payload).get_json()
+    assert data["status"] == "Efeito Fraco"
+    assert data["significant"] is True
+    assert data["practically_significant"] is False
+
+
+def test_scenario_inconclusivo_status():
+    from api.index import SCENARIOS
+    payload = SCENARIOS["inconclusivo"]["analyze"]
+    data = client.post("/api/analyze", json=payload).get_json()
+    assert data["status"] == "Inconclusivo"
+    assert data["significant"] is False
+
     payload = {"baseline_conversion": 0.05, "mde": 0.01, "alpha": 0.05, "power": 0.80}
     r = client.post("/api/calculate-sample-size", json=payload)
     assert r.status_code == 200

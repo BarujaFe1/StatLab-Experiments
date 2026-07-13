@@ -23,9 +23,15 @@
 
 ## Screenshot
 
-> Abra a [demo](https://statlab-ab.vercel.app), carregue a demonstração na aba **Analisar** e capture o card **Vencedor** + gráfico A/B. Salve em `docs/screenshot-analyze.png` quando disponível.
+| Planejar | Analisar (Vencedor) |
+|---|---|
+| ![Planejar](./docs/screenshots/01-plan-sample-size.png) | ![Vencedor](./docs/screenshots/02-analyze-vencedor.png) |
 
-![StatLab logo](./icon.png)
+| Efeito Fraco | Cenários |
+|---|---|
+| ![Efeito Fraco](./docs/screenshots/03-analyze-efeito-fraco.png) | ![Cenários](./docs/screenshots/04-scenarios-chips.png) |
+
+Roteiro de demo (3–5 min): [`docs/DEMO_SCRIPT.md`](./docs/DEMO_SCRIPT.md)
 
 ---
 

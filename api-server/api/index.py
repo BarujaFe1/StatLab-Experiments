@@ -13,7 +13,7 @@ def _error(message, code=400):
     return jsonify({"error": message}), code
 
 
-def interpret_result(p_val, p_a, p_b, ci_low, ci_high, alpha_adj=0.05, mpe=0.005):
+def interpret_result(p_val, p_a, p_b, alpha_adj=0.05, mpe=0.005):
     diff = p_b - p_a
     is_significant = p_val < alpha_adj
     is_practically_significant = abs(diff) > mpe
@@ -21,25 +21,51 @@ def interpret_result(p_val, p_a, p_b, ci_low, ci_high, alpha_adj=0.05, mpe=0.005
         return (
             "Vencedor",
             "A variante B apresenta resultado estatisticamente significativo "
-            "e relevância prática. Recomenda-se considerar o rollout.",
+            "e relevância prática (efeito absoluto acima do MPE). "
+            "Ainda assim, valide instrumentação, duração e custo de rollout "
+            "antes de decidir.",
         )
     elif is_significant and not is_practically_significant:
         return (
             "Efeito Fraco",
-            "Resultado estatisticamente significativo, mas o tamanho do efeito "
-            "é muito pequeno para justificar rollout. Avalie o custo-benefício.",
+            "Há sinal estatístico, mas o efeito absoluto é menor ou igual ao MPE. "
+            "Significância não implica impacto de negócio suficiente para rollout.",
         )
     else:
         return (
             "Inconclusivo",
-            "Os dados não fornecem evidência suficiente para uma conclusão "
-            "forte. Considere aumentar o tráfego ou revisar o experimento.",
+            "Os dados não fornecem evidência suficiente sob o alpha ajustado. "
+            "Evite declarar vencedor: aumente amostra, revise o MDE ou a hipótese.",
         )
+
+
+def decision_checklist(status, abs_diff, mpe, n_a, n_b, alpha_adj):
+    items = [
+        "Confirme se a alocação A/B e a instrumentação estão corretas.",
+        "Evite peeking repetido sem correção sequencial (este MVP usa Bonferroni estático).",
+    ]
+    if status == "Vencedor":
+        items.append(
+            f"Efeito absoluto observado ({abs_diff:.4f}) supera o MPE ({mpe:.4f})."
+        )
+        items.append("Estime custo/benefício do rollout antes de promover.")
+    elif status == "Efeito Fraco":
+        items.append(
+            f"Efeito absoluto ({abs_diff:.4f}) ≤ MPE ({mpe:.4f}): sinal sem relevância prática."
+        )
+        items.append("Considere se o MPE está alinhado ao negócio ou se o experimento vale redesenho.")
+    else:
+        total_n = n_a + n_b
+        items.append(
+            f"Amostra atual n={total_n} com alpha_ajustado={alpha_adj:.4f} ainda não sustenta decisão forte."
+        )
+        items.append("Use a aba Planejar para estimar n sob um MDE realista e poder desejado.")
+    return items
 
 
 @app.route("/api/health", methods=["GET"])
 def health():
-    return jsonify({"status": "ok"})
+    return jsonify({"status": "ok", "service": "statlab-experiments-api"})
 
 
 @app.route("/api/calculate-sample-size", methods=["POST"])
@@ -69,7 +95,22 @@ def calculate_sample_size():
     n = NormalIndPower().solve_power(
         effect_size=abs(h), alpha=alpha, power=power, ratio=1
     )
-    return jsonify({"n_per_group": int(math.ceil(n))})
+    n_per_group = int(math.ceil(n))
+    return jsonify(
+        {
+            "n_per_group": n_per_group,
+            "baseline_conversion": baseline,
+            "mde": mde,
+            "alpha": alpha,
+            "power": power,
+            "effect_size_h": float(abs(h)),
+            "note": (
+                "O MDE é o menor efeito absoluto que você quer detectar com o poder "
+                "configurado. Amostra insuficiente aumenta falso negativo; "
+                "MDE irrealista infla o n e atrasa o experimento."
+            ),
+        }
+    )
 
 
 @app.route("/api/analyze", methods=["POST"])
@@ -104,8 +145,6 @@ def analyze():
     count = np.array([conversions_a, conversions_b])
     nobs = np.array([visitors_a, visitors_b])
 
-    # Zero conversions make the pooled SE 0 → statsmodels emits RuntimeWarning
-    # and may return NaN; treat that as no evidence against H0.
     with warnings.catch_warnings():
         warnings.filterwarnings(
             "ignore",
@@ -126,26 +165,90 @@ def analyze():
     ci_high = diff + z * se
 
     alpha_adj = alpha / n_comparisons
-    status, interpretation = interpret_result(
-        p_val, p_a, p_b, ci_low, ci_high, alpha_adj, mpe
-    )
-
+    status, interpretation = interpret_result(p_val, p_a, p_b, alpha_adj, mpe)
     uplift = (p_b / p_a - 1) if p_a > 0 else 0.0
+    abs_diff = abs(diff)
+    practical = abs_diff > mpe
+    significant = bool(p_val < alpha_adj)
 
     return jsonify(
         {
             "p_value": float(p_val),
             "alpha_ajustado": float(alpha_adj),
+            "alpha": float(alpha),
+            "n_comparisons": int(n_comparisons),
+            "mpe": float(mpe),
             "uplift": float(uplift),
+            "absolute_diff": float(diff),
             "conversion_a": float(p_a),
             "conversion_b": float(p_b),
             "ci_low": float(ci_low),
             "ci_high": float(ci_high),
-            "significant": bool(p_val < alpha_adj),
+            "significant": significant,
+            "practically_significant": bool(practical),
             "status": status,
             "interpretation": interpretation,
+            "next_steps": decision_checklist(
+                status, abs_diff, mpe, visitors_a, visitors_b, alpha_adj
+            ),
         }
     )
+
+
+SCENARIOS = {
+    "vencedor": {
+        "label": "Vencedor (sinal + relevância)",
+        "analyze": {
+            "visitors_a": 10000,
+            "conversions_a": 500,
+            "visitors_b": 10000,
+            "conversions_b": 580,
+            "alpha": 0.05,
+            "n_comparisons": 3,
+            "mpe": 0.005,
+        },
+        "lesson": "Significância após Bonferroni e efeito absoluto acima do MPE.",
+    },
+    "efeito_fraco": {
+        "label": "Efeito Fraco (sinal sem relevância)",
+        "analyze": {
+            "visitors_a": 10000,
+            "conversions_a": 500,
+            "visitors_b": 10000,
+            "conversions_b": 580,
+            "alpha": 0.05,
+            "n_comparisons": 1,
+            "mpe": 0.05,
+        },
+        "lesson": "p-valor pode ser baixo e mesmo assim o efeito ser pequeno demais para o negócio.",
+    },
+    "inconclusivo": {
+        "label": "Inconclusivo (amostra insuficiente)",
+        "analyze": {
+            "visitors_a": 800,
+            "conversions_a": 40,
+            "visitors_b": 800,
+            "conversions_b": 48,
+            "alpha": 0.05,
+            "n_comparisons": 1,
+            "mpe": 0.005,
+        },
+        "lesson": "Uplift pontual positivo não autoriza decisão forte sem poder amostral.",
+    },
+    "zero_conversoes": {
+        "label": "Caso-limite (zero conversões)",
+        "analyze": {
+            "visitors_a": 1000,
+            "conversions_a": 0,
+            "visitors_b": 1000,
+            "conversions_b": 0,
+            "alpha": 0.05,
+            "n_comparisons": 1,
+            "mpe": 0.005,
+        },
+        "lesson": "Sem eventos, não há evidência — a API retorna Inconclusivo sem crash.",
+    },
+}
 
 
 @app.route("/api/demo", methods=["GET"])
@@ -158,17 +261,15 @@ def demo():
                 "alpha": 0.05,
                 "power": 0.80,
             },
-            "analyze": {
-                "visitors_a": 10000,
-                "conversions_a": 500,
-                "visitors_b": 10000,
-                "conversions_b": 580,
-                "alpha": 0.05,
-                "n_comparisons": 3,
-                "mpe": 0.005,
-            },
+            "analyze": SCENARIOS["vencedor"]["analyze"],
+            "scenarios": SCENARIOS,
         }
     )
+
+
+@app.route("/api/scenarios", methods=["GET"])
+def scenarios():
+    return jsonify({"scenarios": SCENARIOS})
 
 
 if __name__ == "__main__":
