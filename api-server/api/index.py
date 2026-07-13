@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 import math
+import warnings
 import numpy as np
 from scipy.stats import norm
 from statsmodels.stats.power import NormalIndPower
@@ -103,7 +104,15 @@ def analyze():
     count = np.array([conversions_a, conversions_b])
     nobs = np.array([visitors_a, visitors_b])
 
-    z_stat, p_val = proportions_ztest(count, nobs)
+    # Zero conversions make the pooled SE 0 → statsmodels emits RuntimeWarning
+    # and may return NaN; treat that as no evidence against H0.
+    with warnings.catch_warnings():
+        warnings.filterwarnings(
+            "ignore",
+            message="invalid value encountered in scalar divide",
+            category=RuntimeWarning,
+        )
+        _z_stat, p_val = proportions_ztest(count, nobs)
     if p_val is None or math.isnan(float(p_val)):
         p_val = 1.0
 

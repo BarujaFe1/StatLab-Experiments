@@ -147,3 +147,26 @@ def test_analyze_ci_reflects_alpha():
     z = norm.ppf(1 - 0.10 / 2)
     assert abs(data["ci_low"] - (diff - z * se)) < 1e-9
     assert abs(data["ci_high"] - (diff + z * se)) < 1e-9
+
+
+def test_analyze_weak_effect_with_small_mpe_boundary():
+    """Significant uplift below a large MPE should be Weak Effect."""
+    payload = {
+        "visitors_a": 10000,
+        "conversions_a": 500,
+        "visitors_b": 10000,
+        "conversions_b": 580,
+        "alpha": 0.05,
+        "n_comparisons": 1,
+        "mpe": 0.05,
+    }
+    data = client.post("/api/analyze", json=payload).get_json()
+    assert data["significant"] is True
+    assert abs(data["conversion_b"] - data["conversion_a"]) < 0.05
+    assert data["status"] == "Efeito Fraco"
+
+
+def test_demo_analyze_payload_is_winner():
+    demo = client.get("/api/demo").get_json()["analyze"]
+    data = client.post("/api/analyze", json=demo).get_json()
+    assert data["status"] == "Vencedor"
