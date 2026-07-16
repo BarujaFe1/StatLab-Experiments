@@ -3,169 +3,192 @@
 
   <h1>StatLab Experiments</h1>
 
-  <p><strong>Planeje e interprete testes A/B com rigor frequentista — e saiba quando o "vencedor" ainda não merece rollout.</strong></p>
+  <p><strong>Planeje e interprete testes A/B com z-test, Bonferroni e motor de decisão em 3 estados.</strong></p>
+  <p><strong>Plan and interpret A/B tests with z-test, Bonferroni and a 3-state decision engine.</strong></p>
 
   <p>
-    <a href="https://statlab-ab.vercel.app">Demo</a> ·
-    <a href="https://github.com/BarujaFe1/StatLab-Experiments">GitHub</a> ·
-    <a href="https://barujafe.vercel.app/">Portfólio</a>
+    <a href="#pt-br">PT-BR</a>
+     · 
+    <a href="#english">English</a>
+     · 
+    <a href="#live-demo">Live Demo</a>
+     · 
+    <a href="#stack">Stack</a>
+     · 
+    <a href="#architecture">Architecture</a>
+     · 
+    <a href="#quick-start">Quick Start</a>
+     · 
+    <a href="#author">Author</a>
   </p>
 
   <p>
-    <img src="https://img.shields.io/badge/Status-MVP%20em%20produ%C3%A7%C3%A3o-0f766e.svg" alt="Status" />
-    <img src="https://img.shields.io/badge/Frontend-Next.js%2016-black.svg?logo=next.js" alt="Next.js" />
-    <img src="https://img.shields.io/badge/Backend-Flask%20WSGI-009688.svg?logo=flask" alt="Flask" />
-    <img src="https://img.shields.io/badge/Stats-SciPy%20%2B%20statsmodels-7C3AED.svg" alt="Stats" />
+    <img alt="Next.js-16" src="https://img.shields.io/badge/Next.js-16-000000?style=for-the-badge&logo=nextdotjs&logoColor=white" />
+    <img alt="Flask" src="https://img.shields.io/badge/Flask-000000?style=for-the-badge&logo=flask&logoColor=white" />
+    <img alt="SciPy" src="https://img.shields.io/badge/SciPy-8CAAE6?style=for-the-badge&logo=scipy&logoColor=white" />
+    <img alt="Status-MVP" src="https://img.shields.io/badge/Status-MVP-0f766e?style=for-the-badge" />
+    <img alt="License-MIT" src="https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge" />
+  </p>
+
+  <p>
+    <a href="https://statlab-experiments.vercel.app"><strong>Live Demo</strong></a>
+     · 
+    <a href="https://github.com/BarujaFe1/StatLab-Experiments"><strong>Repo</strong></a>
+     · 
+    <a href="https://barujafe.vercel.app/"><strong>Portfolio</strong></a>
+     · 
+    <a href="https://www.linkedin.com/in/barujafe/"><strong>LinkedIn</strong></a>
   </p>
 </div>
 
----
 
-## Screenshot
-
-| Planejar | Analisar (Vencedor) |
-|---|---|
-| ![Planejar](./docs/screenshots/01-plan-sample-size.png) | ![Vencedor](./docs/screenshots/02-analyze-vencedor.png) |
-
-| Efeito Fraco | Cenários |
-|---|---|
-| ![Efeito Fraco](./docs/screenshots/03-analyze-efeito-fraco.png) | ![Cenários](./docs/screenshots/04-scenarios-chips.png) |
-
-Roteiro de demo (3–5 min): [`docs/DEMO_SCRIPT.md`](./docs/DEMO_SCRIPT.md)
+> **Stats lab notice:** frequentist helpers for **two-proportion** experiments. Decision states (Winner / Inconclusive / Weak Effect) are **pedagogical decision-support** — not automatic product rollout authority.
 
 ---
 
-## Problema real
+## PT-BR
 
-Times de produto leem testes A/B de forma superficial: confiam só no p-valor, param cedo e tratam qualquer resultado "significativo" como vitória operacional. Falta um ambiente simples que una **planejamento amostral**, **inferência frequentista** e **relevância prática**.
+### Visão geral
+O **StatLab Experiments** calcula tamanho amostral (Cohen's *h* + poder), analisa duas proporções (z-test) e classifica o resultado em **Vencedor / Inconclusivo / Efeito fraco**, com correção de Bonferroni quando aplicável.
 
-## Solução
+### Problema
+Times leem A/B só pelo p-valor, param cedo e tratam qualquer “significativo” como vitória operacional — sem poder, tamanho de efeito nem relevância prática.
 
-**StatLab Experiments** é uma ferramenta web stateless que:
+### Para quem
+PMs, analistas e data scientists que precisam de um cockpit simples de **planejamento + interpretação** frequentista.
 
-1. calcula o tamanho amostral (Cohen's *h* + poder);
-2. analisa duas proporções com z-test, IC e Bonferroni;
-3. classifica o resultado em **Vencedor**, **Inconclusivo** ou **Efeito Fraco** (MPE);
-4. gera um relatório copiável para Slack/Notion/Jira.
-
-## Funcionalidades
-
-- Aba **Planejar** — baseline, MDE → `n` por grupo
-- Aba **Analisar** — visitantes/conversões, alpha, comparações, MPE
+### Funcionalidades
+- Planejamento de tamanho amostral
+- Análise de duas proporções (z-test) via API Flask + SciPy/statsmodels
 - Motor de decisão em 3 estados
-- Demo one-click + copiar relatório
-- Toasts de erro (validação + rede)
-- Deploy dual na Vercel (Next + Flask)
+- Cenários/chips de demonstração na UI Next.js
+- `start.bat` para subir o lab no Windows
 
-## Arquitetura
+### Escopo e limites (honestos)
+- Foco em **proporções / A/B binário** — não é suite completa de experimentação
+- Não substitui design de experimento, SRM checks nem sequential testing avançado
+- Decisão do motor é apoio — rollout continua humano
 
-```txt
-Browser → Next.js (statlab-experiments)
-              │  rewrite /api/*
-              ▼
-         Flask WSGI (statlab-experiments-api)
-```
+---
 
-Detalhes: [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md)
+## English
+
+### Overview
+**StatLab Experiments** plans sample size (Cohen's *h* + power), analyzes two proportions (z-test) and classifies outcomes as **Winner / Inconclusive / Weak Effect**, with Bonferroni when applicable.
+
+### Problem
+Teams read A/B tests from p-values alone, stop early and treat any “significant” result as an operational win — without power, effect size or practical relevance.
+
+### Who it is for
+PMs, analysts and data scientists who need a simple **plan + interpret** frequentist cockpit.
+
+### Features
+- Sample-size planning
+- Two-proportion analysis (z-test) via Flask API + SciPy/statsmodels
+- 3-state decision engine
+- Demo scenarios/chips in the Next.js UI
+- Windows `start.bat` for local lab bring-up
+
+### Scope and honest limits
+- Focused on **binary A/B proportions** — not a full experimentation suite
+- Does not replace experiment design, SRM checks or advanced sequential testing
+- Engine output is support — humans still own rollout
+
+---
+
+## Live Demo
+
+| Surface | URL |
+|---|---|
+| **Public lab** | [https://statlab-experiments.vercel.app](https://statlab-experiments.vercel.app) |
+| **GitHub** | see Repo badge above |
+
+**How to try:** plan a sample size → analyze a scenario → compare Winner vs Weak Effect / Inconclusive → read why the state was chosen.
+
+
+
+## Screenshots
+
+<table>
+  <tr>
+    <td width="50%"><img src="./docs/screenshots/01-plan-sample-size.png" alt="Plan sample size" /><br /><sub><strong>Plan sample size</strong></sub></td>
+    <td width="50%"><img src="./docs/screenshots/02-analyze-vencedor.png" alt="Analyze — Winner" /><br /><sub><strong>Analyze — Winner</strong></sub></td>
+  </tr>
+  <tr>
+    <td width="50%"><img src="./docs/screenshots/03-analyze-efeito-fraco.png" alt="Weak effect" /><br /><sub><strong>Weak effect</strong></sub></td>
+    <td width="50%"><img src="./docs/screenshots/04-scenarios-chips.png" alt="Scenarios" /><br /><sub><strong>Scenarios</strong></sub></td>
+  </tr>
+</table>
+
+
 
 ## Stack
 
-| Camada | Tecnologias |
+| Layer | Technology |
 |---|---|
-| Frontend | Next.js 16, React 19, TypeScript, Tailwind CSS 4, Recharts, Sonner |
-| Backend | Python 3.12, Flask, SciPy, statsmodels, NumPy |
-| Deploy | Vercel (2 projetos) |
-| Qualidade | ESLint, `tsc`, pytest, GitHub Actions |
+| Web | Next.js 16, React, TypeScript, Tailwind, Recharts |
+| API | Flask (WSGI on Vercel), NumPy, SciPy, statsmodels |
 
-## Demo
+---
 
-- **Produção:** https://statlab-ab.vercel.app
-- **API:** https://statlab-experiments-api.vercel.app/api/health
+## Architecture
 
-> Nota: o alias `statlab-experiments.vercel.app` ficou preso a um projeto antigo de outro scope; use **statlab-ab.vercel.app**.
-
-## Rodar localmente
-
-### Windows (rápido)
-
-```bash
-start.bat
+```txt
+frontend/      Next.js UI
+api-server/    Flask handlers (`api/index.py`) + tests
+docs/          demo script + screenshots
+start.bat      local launcher
 ```
 
-### Manual
+---
+
+## Quick Start
 
 ```bash
-# Backend
+.\start.bat
+```
+
+Manual:
+
+```bash
+# API
 cd api-server
 pip install -r requirements.txt
-python api/index.py
+# run as documented / Vercel-style handler locally
 
-# Frontend (outro terminal)
+# Web
 cd frontend
 npm install
 npm run dev
 ```
 
-Abra http://localhost:3000
+---
 
-## Variáveis de ambiente
+## Technical decisions
 
-Veja [`.env.example`](./.env.example). Em produção, o frontend precisa de:
+- **3-state engine** to separate statistical win from weak/practical effect
+- **Flask on Vercel** for a slim stats endpoint next to Next.js
+- Teach **Bonferroni / power** instead of p-value-only screenshots
 
-```txt
-API_BACKEND_URL=https://statlab-experiments-api.vercel.app
-```
-
-## Testes
-
-```bash
-python -m pytest api-server/api/tests -q
-
-cd frontend
-npm run lint
-npm run typecheck
-npm run build
-```
-
-Mais: [`docs/TESTING.md`](./docs/TESTING.md)
-
-## Decisões técnicas
-
-- Flask (WSGI) em vez de FastAPI no serverless Vercel
-- Dois projetos Vercel para evitar conflito Next × `/api`
-- Chamadas relativas `/api/...` + rewrite
-- Decisão em 3 estados + MPE
-
-Trade-offs: [`docs/TECHNICAL_DECISIONS.md`](./docs/TECHNICAL_DECISIONS.md)
+---
 
 ## Roadmap
 
-- [ ] Modo bayesiano
-- [ ] Alertas de sequential testing / peeking
-- [ ] Histórico de experimentos
-- [ ] Export PDF / link compartilhável
-- [ ] Multi-métrica + SRM guardrails
+- More educational scenarios and guardrails (SRM messaging)
+- Exportable analysis memo
+- Broader test families beyond two proportions
 
-## Status
+---
 
-**MVP em produção** — adequado como case de portfólio (estatística aplicada + full-stack). Sem auth/DB; API pública de demonstração.
+## Author
 
-## O que este projeto demonstra
+**Felipe Alirio Baruja** — data / product / full-stack portfolio.
 
-- Estatística frequentista aplicada (poder, z-test, IC, Bonferroni, MPE)
-- Backend científico em Python empacotado para serverless WSGI
-- Frontend tipado com UX de decisão (não só "tabela de p-valores")
-- Arquitetura de deploy consciente dos limites da Vercel
-- Testes automatizados da API + CI
+- Portfolio: [https://barujafe.vercel.app/](https://barujafe.vercel.app/)
+- GitHub: [https://github.com/BarujaFe1](https://github.com/BarujaFe1)
+- LinkedIn: [https://www.linkedin.com/in/barujafe/](https://www.linkedin.com/in/barujafe/)
 
-## Como eu apresentaria em entrevista
 
-> "Construí um sandbox de A/B testing que força a conversa certa: amostra suficiente, significância ajustada e relevância prática. O desafio de engenharia foi fazer SciPy/statsmodels rodarem bem no runtime Python da Vercel sem conflitar com o App Router — por isso separei Flask em um projeto e usei rewrite no Next."
+## License
 
-## Autor
-
-**Felipe Alirio Baruja (BarujaFe1)** · [Portfólio](https://barujafe.vercel.app/) · [GitHub](https://github.com/BarujaFe1)
-
-## Licença
-
-A definir.
+MIT — see [`LICENSE`](./LICENSE).
