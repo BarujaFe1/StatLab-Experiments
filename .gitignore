@@ -31,3 +31,6 @@ data/raw_data/*
 results/*
 *.tmp
 *.log
+
+# Additional ignores
+target/
