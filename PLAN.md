@@ -1,3 +1,10 @@
+> **SNAPSHOT HISTÓRICO (2026-07)** — Este documento registra o estado do projeto
+> antes do hardening científico de 2026-08-21 (motor de 4 estados, IC Newcombe
+> ajustado, contratos honestos de edge cases). Termos como "3 estados",
+> "Vencedor", "FastAPI" e a URL legada refletem o contexto da época e NÃO
+> descrevem o comportamento atual. Fontes de verdade atuais: README.md,
+> docs/STATISTICAL_METHOD.md, docs/api-contract.md, docs/architecture-guardrails.md.
+
 # Evolução: StatLab Experiments (V1.1)
 
 ## Objetivo

@@ -3,8 +3,8 @@
 
   <h1>StatLab Experiments</h1>
 
-  <p><strong>Planeje e interprete testes A/B com z-test, Bonferroni e motor de decisão em 3 estados.</strong></p>
-  <p><strong>Plan and interpret A/B tests with z-test, Bonferroni and a 3-state decision engine.</strong></p>
+  <p><strong>Planeje e interprete testes A/B com z-test, Bonferroni e motor de decisão em 4 estados com direção do efeito.</strong></p>
+  <p><strong>Plan and interpret A/B tests with z-test, Bonferroni and a 4-state decision engine with signed effect direction.</strong></p>
 
   <p>
     <a href="#pt-br">PT-BR</a>
@@ -31,7 +31,7 @@
   </p>
 
   <p>
-    <a href="https://statlab-experiments.vercel.app"><strong>Live Demo</strong></a>
+    <a href="https://statlab-ab.vercel.app"><strong>Live Demo</strong></a>
      · 
     <a href="https://github.com/BarujaFe1/StatLab-Experiments"><strong>Repo</strong></a>
      · 
@@ -42,14 +42,14 @@
 </div>
 
 
-> **Stats lab notice:** frequentist helpers for **two-proportion** experiments. Decision states (Winner / Inconclusive / Weak Effect) are **pedagogical decision-support** — not automatic product rollout authority.
+> **Stats lab notice:** frequentist helpers for **two-proportion** experiments. Decision states (Melhora / Regressão / Efeito Fraco / Inconclusivo) are **pedagogical decision-support** — not automatic product rollout authority.
 
 ---
 
 ## PT-BR
 
 ### Visão geral
-O **StatLab Experiments** calcula tamanho amostral (Cohen's *h* + poder), analisa duas proporções (z-test) e classifica o resultado em **Vencedor / Inconclusivo / Efeito fraco**, com correção de Bonferroni quando aplicável.
+O **StatLab Experiments** calcula tamanho amostral (Cohen's *h* + poder), analisa duas proporções (z-test) e classifica o resultado em **Melhora / Regressão / Efeito Fraco / Inconclusivo** — com direção do efeito assinada (diff = pB − pA), correção de Bonferroni e IC de Newcombe no nível ajustado.
 
 ### Problema
 Times leem A/B só pelo p-valor, param cedo e tratam qualquer “significativo” como vitória operacional — sem poder, tamanho de efeito nem relevância prática.
@@ -58,9 +58,11 @@ Times leem A/B só pelo p-valor, param cedo e tratam qualquer “significativo�
 PMs, analistas e data scientists que precisam de um cockpit simples de **planejamento + interpretação** frequentista.
 
 ### Funcionalidades
-- Planejamento de tamanho amostral
+- Planejamento de tamanho amostral (baseline, MDE absoluto, poder e alpha)
 - Análise de duas proporções (z-test) via API Flask + SciPy/statsmodels
-- Motor de decisão em 3 estados
+- Motor de decisão em 4 estados com direção do efeito (pB − pA vs MPE)
+- IC de Newcombe coerente com Bonferroni (a UI mostra o nível real, ex.: IC 98,33%)
+- Contratos honestos: p-valor null em casos degenerados, uplift null com baseline zero, 400 estruturado para entradas inválidas
 - Cenários/chips de demonstração na UI Next.js
 - `start.bat` para subir o lab no Windows
 
@@ -74,7 +76,7 @@ PMs, analistas e data scientists que precisam de um cockpit simples de **planeja
 ## English
 
 ### Overview
-**StatLab Experiments** plans sample size (Cohen's *h* + power), analyzes two proportions (z-test) and classifies outcomes as **Winner / Inconclusive / Weak Effect**, with Bonferroni when applicable.
+**StatLab Experiments** plans sample size (Cohen's *h* + power), analyzes two proportions (z-test) and classifies outcomes as **Melhora / Regressão / Efeito Fraco / Inconclusivo** — with signed effect direction (diff = pB − pA), Bonferroni correction and a Newcombe CI at the adjusted level.
 
 ### Problem
 Teams read A/B tests from p-values alone, stop early and treat any “significant” result as an operational win — without power, effect size or practical relevance.
@@ -83,9 +85,11 @@ Teams read A/B tests from p-values alone, stop early and treat any “significan
 PMs, analysts and data scientists who need a simple **plan + interpret** frequentist cockpit.
 
 ### Features
-- Sample-size planning
+- Sample-size planning (baseline, absolute MDE, power and alpha)
 - Two-proportion analysis (z-test) via Flask API + SciPy/statsmodels
-- 3-state decision engine
+- 4-state decision engine with signed effect direction (pB − pA vs MPE)
+- Newcombe CI coherent with Bonferroni (UI shows the real level, e.g. 98.33%)
+- Honest contracts: null p-value on degenerate counts, null uplift on zero baseline, structured 400s for invalid input
 - Demo scenarios/chips in the Next.js UI
 - Windows `start.bat` for local lab bring-up
 
@@ -100,10 +104,10 @@ PMs, analysts and data scientists who need a simple **plan + interpret** frequen
 
 | Surface | URL |
 |---|---|
-| **Public lab** | [https://statlab-experiments.vercel.app](https://statlab-experiments.vercel.app) |
+| **Public lab** | [https://statlab-ab.vercel.app](https://statlab-ab.vercel.app) |
 | **GitHub** | see Repo badge above |
 
-**How to try:** plan a sample size → analyze a scenario → compare Winner vs Weak Effect / Inconclusive → read why the state was chosen.
+**How to try:** plan a sample size → analyze a scenario → compare Melhora vs Regressão / Weak Effect / Inconclusive → read why the state was chosen (direction, adjusted alpha, real CI level).
 
 
 
@@ -112,11 +116,11 @@ PMs, analysts and data scientists who need a simple **plan + interpret** frequen
 <table>
   <tr>
     <td width="50%"><img src="./docs/screenshots/01-plan-sample-size.png" alt="Plan sample size" /><br /><sub><strong>Plan sample size</strong></sub></td>
-    <td width="50%"><img src="./docs/screenshots/02-analyze-vencedor.png" alt="Analyze — Winner" /><br /><sub><strong>Analyze — Winner</strong></sub></td>
+    <td width="50%"><img src="./docs/screenshots/02-analyze-melhora.png" alt="Analyze — Melhora" /><br /><sub><strong>Analyze — Melhora</strong></sub></td>
   </tr>
   <tr>
-    <td width="50%"><img src="./docs/screenshots/03-analyze-efeito-fraco.png" alt="Weak effect" /><br /><sub><strong>Weak effect</strong></sub></td>
-    <td width="50%"><img src="./docs/screenshots/04-scenarios-chips.png" alt="Scenarios" /><br /><sub><strong>Scenarios</strong></sub></td>
+    <td width="50%"><img src="./docs/screenshots/03-analyze-regressao.png" alt="Analyze — Regressão" /><br /><sub><strong>Analyze — Regressão</strong></sub></td>
+    <td width="50%"><img src="./docs/screenshots/04-analyze-efeito-fraco.png" alt="Weak effect" /><br /><sub><strong>Weak effect</strong></sub></td>
   </tr>
 </table>
 
@@ -166,9 +170,13 @@ npm run dev
 
 ## Technical decisions
 
-- **3-state engine** to separate statistical win from weak/practical effect
+- **4-state engine with signed direction** — a significantly *worse* B is Regressão, never a win (the historical `abs(diff)` bug is locked out by golden test G3)
+- **Newcombe CI at the Bonferroni-adjusted level** — inference and interval are family-wise coherent; the UI shows the real level (e.g. 98.33%)
+- **Honest edge contracts** — no fabricated p-values or uplifts; structured 400s for invalid input
 - **Flask on Vercel** for a slim stats endpoint next to Next.js
-- Teach **Bonferroni / power** instead of p-value-only screenshots
+- Teach **Bonferroni / power / direction** instead of p-value-only screenshots
+
+Statistical methodology and assumptions: [`docs/STATISTICAL_METHOD.md`](./docs/STATISTICAL_METHOD.md).
 
 ---
 

@@ -48,8 +48,11 @@ Calls are always **relative** (`/api/...`). Never hardcode the backend URL in th
 ### Statistical core
 
 1. **Sample size:** Cohen’s *h* + `NormalIndPower.solve_power`
-2. **Analysis:** `proportions_ztest`, CI via `norm.ppf(1 - alpha/2)`, Bonferroni `alpha / n_comparisons`
-3. **Decision:** Vencedor / Inconclusivo / Efeito Fraco using significance × MPE
+2. **Analysis:** `proportions_ztest` (score test, bilateral); Bonferroni `alpha / n_comparisons`
+3. **CI:** Newcombe (Wilson híbrido) para `pB − pA` via `confint_proportions_2indep`, no nível ajustado (`ci_level = 1 − alpha_adj`)
+4. **Decision:** Melhora / Regressão / Efeito Fraco / Inconclusivo — significância × MPE **com direção assinada** (`diff = pB − pA`)
+
+Detalhes e premissas: [`STATISTICAL_METHOD.md`](./STATISTICAL_METHOD.md).
 
 ## Local development
 
