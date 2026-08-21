@@ -19,12 +19,13 @@ The "Plan" module calculates the required sample size to ensure statistical powe
 The "Analyze" module evaluates the outcomes of a completed A/B test.
 - **Input Parameters:**
   - Visitors and Conversions for both Variant A and Variant B.
+  - Alpha, number of comparisons (Bonferroni) and MPE (practical significance threshold).
 - **Calculations performed:**
   - **Conversion Rates**: Observed performance per variant.
-  - **Uplift**: Relative performance improvement.
-  - **P-Value**: Calculated via `proportions_ztest` (Z-test for two independent proportions).
-  - **Confidence Interval**: Estimated range for the observed difference.
-- **Interpretation Logic**: Automatically flags results as "Significant" or "Inconclusive" based on a configurable Alpha.
+  - **Uplift**: Relative improvement (`null` — undefined — when baseline A is zero).
+  - **P-Value**: Calculated via `proportions_ztest` (Z-test for two independent proportions); `null` with `test_defined=false` for degenerate counts (0% vs 0%, 100% vs 100%).
+  - **Confidence Interval**: Newcombe (hybrid Wilson) interval for `pB − pA`, at the Bonferroni-adjusted level (`ci_level`).
+- **Interpretation Logic**: Four decision states — **Melhora / Regressão / Efeito Fraco / Inconclusivo** — combining adjusted-alpha significance with the signed direction of the effect vs MPE.
 
 ---
 
@@ -44,6 +45,6 @@ The "Analyze" module evaluates the outcomes of a completed A/B test.
 ---
 
 ## 3. Technical Implementation
-- **Architecture**: Stateless (no database), decouple Frontend (Next.js) from Backend (FastAPI).
-- **Communication**: Strict API contracts via Pydantic schemas.
-- **Deployability**: Optimized for instant deployment on Vercel (front) and Render/Fly.io (back).
+- **Architecture**: Stateless (no database), decouple Frontend (Next.js) from Backend (Flask WSGI on Vercel).
+- **Communication**: Strict JSON API contracts (see `docs/api-contract.md`); non-object bodies and invalid counts return structured 400s.
+- **Deployability**: Dual Vercel projects (Next.js front + Flask API), demo at https://statlab-ab.vercel.app.
