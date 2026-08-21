@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import { Toaster, toast } from 'sonner';
 import type { AnalysisInput, AnalysisResult, Scenario } from '@/lib/types';
-import { SCENARIO_ORDER, STATUS_COLOR } from '@/lib/types';
+import { DIRECTION_LABEL, SCENARIO_ORDER, STATUS_COLOR } from '@/lib/types';
 
 function Field({
   id,
@@ -46,6 +46,7 @@ export default function Home() {
   const [loadingAnalyze, setLoadingAnalyze] = useState(false);
   const [loadingDemo, setLoadingDemo] = useState(false);
   const [scenarios, setScenarios] = useState<Record<string, Scenario>>({});
+  const [assumptions, setAssumptions] = useState<string[]>([]);
   const [activeScenario, setActiveScenario] = useState<string | null>(null);
   const [planNote, setPlanNote] = useState<string | null>(null);
 
@@ -53,6 +54,7 @@ export default function Home() {
   const [baseline, setBaseline] = useState('0.05');
   const [mde, setMde] = useState('0.01');
   const [power, setPower] = useState('0.80');
+  const [planAlpha, setPlanAlpha] = useState('0.05');
   const [sampleSize, setSampleSize] = useState<number | null>(null);
 
   // Analyze State
@@ -69,6 +71,10 @@ export default function Home() {
     fetch('/api/scenarios')
       .then((r) => r.json())
       .then((data) => setScenarios(data.scenarios || {}))
+      .catch(() => undefined);
+    fetch('/api/assumptions')
+      .then((r) => r.json())
+      .then((data) => setAssumptions(data.assumptions || []))
       .catch(() => undefined);
   }, []);
 
@@ -92,6 +98,7 @@ export default function Home() {
           baseline_conversion: parseFloat(baseline),
           mde: parseFloat(mde),
           power: parseFloat(power),
+          alpha: parseFloat(planAlpha) || 0.05,
         }),
       });
       const data = await res.json();
@@ -171,12 +178,14 @@ export default function Home() {
         return;
       }
       if (data.scenarios) setScenarios(data.scenarios);
+      if (data.assumptions) setAssumptions(data.assumptions);
       const d = data.analyze as AnalysisInput;
       applyScenarioInputs(d);
       setBaseline(String(data.sample_size.baseline_conversion));
       setMde(String(data.sample_size.mde));
       setPower(String(data.sample_size.power ?? 0.8));
-      setActiveScenario('vencedor');
+      setPlanAlpha(String(data.sample_size.alpha ?? 0.05));
+      setActiveScenario('melhora');
       setActiveTab('analyze');
       await analyze(d);
     } catch {
@@ -188,19 +197,22 @@ export default function Home() {
 
   const copyReport = async () => {
     if (!analysis) return;
+    const ciLevelPct = ((analysis.ci_level ?? 1 - analysis.alpha_ajustado) * 100).toFixed(2);
     const text = [
       'StatLab Experiments — Relatório de Análise',
       `Status: ${analysis.status}`,
       `Conversão A: ${(analysis.conversion_a * 100).toFixed(2)}%`,
       `Conversão B: ${(analysis.conversion_b * 100).toFixed(2)}%`,
       `Diferença absoluta: ${((analysis.absolute_diff ?? analysis.conversion_b - analysis.conversion_a) * 100).toFixed(2)} pp`,
-      `Uplift relativo: ${(analysis.uplift * 100).toFixed(2)}%`,
-      `p-valor: ${analysis.p_value.toFixed(4)}`,
+      `Uplift relativo: ${analysis.uplift === null || analysis.uplift === undefined ? 'Não definido (baseline zero)' : `${(analysis.uplift * 100).toFixed(2)}%`}`,
+      `p-valor: ${analysis.p_value === null || analysis.p_value === undefined ? 'indefinido (teste degenerado)' : analysis.p_value.toFixed(4)}`,
       `Alpha ajustado (Bonferroni): ${analysis.alpha_ajustado.toFixed(4)}`,
       `MPE: ${analysis.mpe ?? parseFloat(mpe)}`,
+      `Direção: ${DIRECTION_LABEL[analysis.direction] ?? analysis.direction}`,
       `Significativo: ${analysis.significant ? 'sim' : 'não'}`,
       `Relevante na prática: ${analysis.practically_significant ? 'sim' : 'não'}`,
-      `IC: [${analysis.ci_low.toFixed(4)}, ${analysis.ci_high.toFixed(4)}]`,
+      `IC ${ciLevelPct}% (${analysis.ci_method ?? 'newcomb'}): [${analysis.ci_low.toFixed(4)}, ${analysis.ci_high.toFixed(4)}]`,
+      ...(analysis.warnings?.length ? analysis.warnings.map((w) => `Aviso: ${w}`) : []),
       analysis.interpretation,
       ...(analysis.next_steps || []).map((s) => `- ${s}`),
     ].join('\n');
@@ -214,7 +226,7 @@ export default function Home() {
 
   const busy = loadingPlan || loadingAnalyze || loadingDemo;
   const ciLevel = analysis
-    ? `${((1 - (analysis.alpha || 0.05)) * 100).toFixed(0)}%`
+    ? `${((analysis.ci_level ?? 1 - analysis.alpha_ajustado) * 100).toFixed(2)}%`
     : null;
 
   return (
@@ -261,7 +273,7 @@ export default function Home() {
             disabled={busy}
             className="text-sm text-teal-700 hover:text-teal-900 underline disabled:opacity-50"
           >
-            {loadingDemo ? 'Carregando demonstração…' : 'Começar com cenário Vencedor'}
+            {loadingDemo ? 'Carregando demonstração…' : 'Começar com cenário Melhora'}
           </button>
         </div>
 
@@ -300,6 +312,19 @@ export default function Home() {
           </section>
         )}
 
+        {assumptions.length > 0 && (
+          <details className="bg-white border border-slate-200 rounded-xl px-5 py-4 text-sm text-slate-600">
+            <summary className="cursor-pointer font-medium text-slate-700">
+              Premissas e limites do teste
+            </summary>
+            <ul className="list-disc pl-5 mt-3 space-y-1.5 text-xs leading-relaxed">
+              {assumptions.map((a) => (
+                <li key={a}>{a}</li>
+              ))}
+            </ul>
+          </details>
+        )}
+
         <div className="flex p-1 bg-slate-200 rounded-lg w-fit mx-auto" role="tablist" aria-label="Módulos">
           <button
             type="button"
@@ -329,8 +354,11 @@ export default function Home() {
               Amostra pequena demais aumenta falso negativo; MDE irrealista infla o n.
             </div>
             <Field id="baseline" label="Taxa de conversão base" hint="Proporção atual esperada, ex. 0.05 = 5%." value={baseline} onChange={setBaseline} placeholder="ex: 0.05" />
-            <Field id="mde" label="MDE — menor efeito detectável" hint="Diferença absoluta desejada (não percentual relativo)." value={mde} onChange={setMde} placeholder="ex: 0.01" />
-            <Field id="power" label="Poder estatístico" hint="Padrão 0.80. Valores maiores pedem mais amostra." value={power} onChange={setPower} placeholder="0.80" />
+            <Field id="mde" label="MDE — menor efeito detectável" hint="Diferença absoluta desejada (não percentual relativo). 0.01 = 1 ponto percentual." value={mde} onChange={setMde} placeholder="ex: 0.01" />
+            <div className="grid grid-cols-2 gap-4">
+              <Field id="power" label="Poder estatístico" hint="Padrão 0.80." value={power} onChange={setPower} placeholder="0.80" />
+              <Field id="plan_alpha" label="Alpha" hint="Padrão 0.05." value={planAlpha} onChange={setPlanAlpha} placeholder="0.05" />
+            </div>
             <button
               type="button"
               onClick={calculateSample}
@@ -347,7 +375,7 @@ export default function Home() {
               </div>
             ) : (
               <p className="text-sm text-slate-400 pt-2">
-                Informe baseline, MDE e poder para estimar o n com alpha 0.05.
+                Informe baseline, MDE, poder e alpha para estimar o n por grupo.
               </p>
             )}
           </section>
@@ -390,7 +418,8 @@ export default function Home() {
 
             {!analysis && !loadingAnalyze && (
               <p className="text-sm text-slate-400">
-                Escolha um cenário acima ou preencha A/B para ver a decisão em 3 estados.
+                Escolha um cenário acima ou preencha A/B para ver a decisão em 4 estados
+                (Melhora, Regressão, Efeito Fraco, Inconclusivo).
               </p>
             )}
 
@@ -430,17 +459,46 @@ export default function Home() {
                     <span className={`px-2 py-1 rounded-full ${analysis.practically_significant ? 'bg-sky-100 text-sky-800' : 'bg-amber-100 text-amber-800'}`}>
                       {analysis.practically_significant ? 'Relevante na prática (MPE)' : 'Abaixo do MPE'}
                     </span>
+                    <span className={`px-2 py-1 rounded-full ${
+                      analysis.direction === 'positive'
+                        ? 'bg-emerald-100 text-emerald-800'
+                        : analysis.direction === 'negative'
+                          ? 'bg-red-100 text-red-800'
+                          : 'bg-slate-200 text-slate-600'
+                    }`}>
+                      {DIRECTION_LABEL[analysis.direction] ?? analysis.direction}
+                    </span>
                   </div>
                   <div className="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-slate-600">
-                    <div><span className="font-medium text-slate-800">p-valor:</span> {analysis.p_value.toFixed(4)}</div>
+                    <div>
+                      <span className="font-medium text-slate-800">p-valor:</span>{' '}
+                      {analysis.p_value === null || analysis.p_value === undefined
+                        ? <span className="text-slate-500">indefinido (teste degenerado)</span>
+                        : analysis.p_value.toFixed(4)}
+                    </div>
                     <div><span className="font-medium text-slate-800">Alpha ajustado:</span> {analysis.alpha_ajustado.toFixed(4)}</div>
-                    <div><span className="font-medium text-slate-800">Δ absoluto:</span> {(((analysis.absolute_diff ?? (analysis.conversion_b - analysis.conversion_a))) * 100).toFixed(2)} pp</div>
-                    <div><span className="font-medium text-slate-800">Uplift:</span> {(analysis.uplift * 100).toFixed(2)}%</div>
+                    <div><span className="font-medium text-slate-800">Δ absoluto (B − A):</span> {(((analysis.absolute_diff ?? (analysis.conversion_b - analysis.conversion_a))) * 100).toFixed(2)} pp</div>
+                    <div>
+                      <span className="font-medium text-slate-800">Uplift:</span>{' '}
+                      {analysis.uplift === null || analysis.uplift === undefined
+                        ? <span className="text-slate-500">Não definido (baseline zero)</span>
+                        : `${(analysis.uplift * 100).toFixed(2)}%`}
+                    </div>
                     <div className="sm:col-span-2">
                       <span className="font-medium text-slate-800">IC{ciLevel ? ` ${ciLevel}` : ''}:</span>{' '}
                       [{analysis.ci_low.toFixed(4)}, {analysis.ci_high.toFixed(4)}]
+                      {analysis.ci_method ? <span className="text-slate-400 text-xs"> ({analysis.ci_method})</span> : null}
                     </div>
                   </div>
+                  {analysis.warnings && analysis.warnings.length > 0 && (
+                    <div className="pt-3 border-t border-slate-200 space-y-1.5">
+                      {analysis.warnings.map((w) => (
+                        <p key={w} className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-md px-3 py-2 leading-relaxed">
+                          {w}
+                        </p>
+                      ))}
+                    </div>
+                  )}
                   {analysis.next_steps && analysis.next_steps.length > 0 && (
                     <div className="pt-3 border-t border-slate-200">
                       <p className="text-xs font-medium uppercase tracking-wider text-slate-500 mb-2">Próximos passos</p>
